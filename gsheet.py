@@ -6,6 +6,8 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from dotenv import load_dotenv
+import pandas as pd
+
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
@@ -46,7 +48,7 @@ def load_creds():
             pickle.dump(creds, token)
     return creds
 
-def main():
+def load_data():
     """
     """
     # load SPREADSHEET_ID from environment file
@@ -59,15 +61,16 @@ def main():
     # Call the Sheets API
     sheet = service.spreadsheets()
     result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME).execute()
-    values = result.get('values', [])
+    values = result.get('values')
 
-    if not values:
-        print('No data found.')
-    else:
-        print('Col0, Col1,Col2,Col4:')
-        for row in values:
-            # Print columns A and E, which correspond to indices 0 and 4.
-            print('%s, %s, %s, %s' % (row[0], row[1],row[2],row[4]))
+    df = pd.DataFrame(values)
+    return df
+
+
+def main():
+    data = load_data()
+    print(data.head())
+
 
 
 if __name__ == '__main__':
