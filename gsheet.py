@@ -69,6 +69,11 @@ def load_data():
 
 def main():
     data = load_data()
+    pd.set_option('display.max_columns', 8)
+    pd.set_option('display.width', 180)
+    d2 = data.loc[:, [1, 2, 3, 4, 5, 7, 8]]
+    dfiltered = d2[d2[7].isnull() & d2[1].notnull() & (d2[2] != 'PAYMENT - THANK YOU')]
+
     print(data.head())
 
 
