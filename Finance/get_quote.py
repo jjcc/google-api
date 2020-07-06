@@ -3,6 +3,8 @@ import pandas as pd
 import datetime
 from datetime import datetime,timedelta
 token1=""
+with open("tiingo.token") as f:
+    token1 = f.readline()
 
 SP=pd.read_csv(r"data/SP500stocks.csv")
 
@@ -47,4 +49,4 @@ print(len(ticker_symbols))
 #
 df_final=pd.concat(data1)
 df_final.drop(df_final.iloc[:,6:13],axis=1,inplace=True)
-df_final.to_csv(r"data/historicalMSFT_quotes.csv",index=False)
+df_final.to_csv(r"data/historicalMSFT_quotes2.csv",index=False)
