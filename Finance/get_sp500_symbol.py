@@ -1,6 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+'''
+scrap sp500 list from WikiPedia
+'''
 
 
 url="https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"

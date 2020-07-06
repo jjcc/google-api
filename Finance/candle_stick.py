@@ -3,6 +3,10 @@
 import pandas as pd
 from pandas_datareader import data as web
 import plotly.graph_objects as go
+'''
+Generate a candle stick graphy
+'''
+
 
 stock = 'MSFT'
 df = web.DataReader(stock, data_source='yahoo', start='06-01-2019')

@@ -2,6 +2,10 @@ import requests
 import pandas as pd
 import datetime
 from datetime import datetime,timedelta
+'''
+Use tiingo to retrieve data from a symbol
+'''
+
 token1=""
 with open("tiingo.token") as f:
     token1 = f.readline()
