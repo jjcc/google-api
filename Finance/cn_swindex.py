@@ -4,6 +4,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import mplfinance as mpf
 import matplotlib
+import datetime
 
 list_file = "data/sw_index_class1"
 
@@ -30,8 +31,19 @@ def get_class1_info(file):
     # list of (index, code, name)
     return tuple_list
 
-def retrive_daily( info_tuple):
-    df_daily,msg = swindex.get_index_daily(info_tuple[1],'2020-01-01','2020-07-06')
+def retrive_daily( info_tuple, start, end = None):
+    '''
+    retrieve data of an index.
+    :param info_tuple:  The tuple about the index with the format of (index, code, name)
+    :param start: start date string in format of 'yyyy-mm-dd'
+    :param end:   end date string in format of 'yyyy-mm-dd'
+    :return: data frame of the daily history
+    '''
+    if start == None:
+        start = '2020-01-01'
+    if end == None:
+        end = str(datetime.date.today())
+    df_daily,msg = swindex.get_index_daily(info_tuple[1],start,end)
     print(f'returned message: {msg}')
     return df_daily
 
@@ -114,14 +126,10 @@ def draw_candle_plotly( df, image_file_name ):
 
 
 
-df0 = pd.read_csv(u'data/采掘_daily.csv',parse_dates=True)
-df = df0.iloc[::-1,:]
-img_file = u'data/采掘_daily.csv'
-
 
 #draw_candle_plotly(df, img_file)
 
-def draw_candle_mpf(df1):
+def draw_candle_mpf(df1, title = u"标题"):
     '''
     use mplfiance to draw chart
     :param df1:
@@ -134,18 +142,38 @@ def draw_candle_mpf(df1):
     df3 = df2.set_index('date')
 
     mc = mpf.make_marketcolors(up='r', down='g')
-    s = mpf.make_mpf_style(marketcolors=mc,rc={'font.family': 'SimHei','figure.facecolor':'lightgray'})
+    s = mpf.make_mpf_style(marketcolors=mc,rc={'font.family': 'SimHei'})#,'figure.facecolor':'lightgray'})
 
-    mpf.plot(df3, type='candle', mav=(5, 12, 26),datetime_format='%d-%m-%Y',
+    mpf.plot(df3, type='candle', mav=(5, 12, 26),datetime_format='%Y/%m/%d',
              volume=True,
-             title=u'采掘，2020',style=s,
-             #savefig='data/testsave.png')
+             title=title,style=s,
+             tight_layout=True,
+             ylabel=u'指数值',
+             scale_padding={'bottom': 1.1,'left':0.8},
+             #savefig='data/testsave_t.png')
              )
 
     #fig.savefig("pgf-mwe.png")
-dfsub = df.iloc[50:,:]
 
-draw_candle_mpf(dfsub)
+def main(arg):
+    today = str(datetime.date.today())
+    df_indexlist = pd.read_csv(list_file)
+
+    # for index, row in df_indexlist.iterrows():
+    #     code = row.index_code
+    #     name = row.index_name
+    #     title = f'{name}:{today}'
+
+    row = df_indexlist.iloc[1,:]
+    code = row.index_code
+    name = row.index_name
+    title = f'{name}:{today}'
+    data_file = u'data/采掘_daily.csv'
+    df0 = pd.read_csv(data_file, parse_dates=True)
+    df = df0.iloc[::-1, :] #reverse the sequence
+
+    dfsub = df.iloc[50:,:]
+    draw_candle_mpf(dfsub,title)
 
 #sample
 
@@ -156,3 +184,9 @@ draw_candle_mpf(dfsub)
 
 #pass
 
+
+
+
+if __name__ == "__main__":
+    #arguments = parse_arguments()
+    main(None)
