@@ -12,7 +12,7 @@ list_file = "data/sw_index_class1"
 def dump_sw_class1_list(file):
     '''
     Get the list of SW class1 list and save to file
-    :param file:
+    :param file: the file containing indices that will be saved
     :return:
     '''
     df, msg = swindex.get_index_list()
@@ -25,10 +25,14 @@ def dump_sw_class1_list(file):
 
 
 def get_class1_info(file):
+    '''
+    get list of SW class1 info
+    :param file: The csv file containing SW class1 index dumped from other functions
+    :return: list of class1 index data in form of (index, code, name)
+    '''
     df_class_one = pd.read_csv(file)
     df_rec = df_class_one[['index_code','index_name']].to_records()
     tuple_list = [ x for x in df_rec]
-    # list of (index, code, name)
     return tuple_list
 
 def retrive_daily( info_tuple, start, end = None):
@@ -57,6 +61,11 @@ def retrive_daily( info_tuple, start, end = None):
 # a_daily.to_csv("data/" + fn)
 
 
+
+# class1_list = get_class1_info(list_file)
+# a_item = class1_list[1]
+# a_daily = retrive_daily(a_item)
+#
 
 
 
