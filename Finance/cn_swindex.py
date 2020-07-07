@@ -5,6 +5,7 @@ import plotly.graph_objects as go
 import mplfinance as mpf
 import matplotlib
 import datetime
+from time import sleep
 
 list_file = "data/sw_index_class1"
 
@@ -60,12 +61,23 @@ def retrive_daily( info_tuple, start, end = None):
 #
 # a_daily.to_csv("data/" + fn)
 
+def harvest_daily_info(index_file, start_data, end_date = None, sleeptime = 0.0, stop=100 ):
+    class1_list = get_class1_info(index_file)
+    if end_date == None:
+        end_date = str(datetime.date.today())
+    count = 0
+    for class1 in class1_list:
+        a_item = class1
+        fn = str(a_item[1])+ f'_till_{end_date}_daily.csv'
+        a_daily = retrive_daily(a_item, start_data,end_date)
+        a_daily.to_csv("data/" + fn)
+        count += 1
+        if count > stop:
+            break
+        if sleeptime > 0.0:
+            sleep(sleeptime)
 
 
-# class1_list = get_class1_info(list_file)
-# a_item = class1_list[1]
-# a_daily = retrive_daily(a_item)
-#
 
 
 
@@ -153,7 +165,7 @@ def draw_candle_mpf(df1, title = u"标题"):
     mc = mpf.make_marketcolors(up='r', down='g')
     s = mpf.make_mpf_style(marketcolors=mc,rc={'font.family': 'SimHei'})#,'figure.facecolor':'lightgray'})
 
-    mpf.plot(df3, type='candle', mav=(5, 12, 26),datetime_format='%Y/%m/%d',
+    mpf.plot(df3, type='candle', mav=(6, 12, 26),datetime_format='%Y-%m-%d',
              volume=True,
              title=title,style=s,
              tight_layout=True,
@@ -164,7 +176,22 @@ def draw_candle_mpf(df1, title = u"标题"):
 
     #fig.savefig("pgf-mwe.png")
 
-def main(arg):
+
+
+
+def draw_a_candle_image(row, today, data_file):
+    code = row.name # it's 801030
+    name = row.index_name
+    title = f'{name}:{today}'
+    df0 = pd.read_csv(data_file, parse_dates=True)
+    df = df0.iloc[::-1, :]  # reverse the sequence
+    old_cols = df.columns
+    new_cols = [c if c != "vol" else "volume" for c in old_cols ]
+    df.columns = new_cols
+    dfsub = df #df.iloc[50:, :]
+    draw_candle_mpf(dfsub, title)
+
+def test_draw_candle():
     today = str(datetime.date.today())
     df_indexlist = pd.read_csv(list_file)
 
@@ -172,18 +199,16 @@ def main(arg):
     #     code = row.index_code
     #     name = row.index_name
     #     title = f'{name}:{today}'
+    code = 801030
+    df_indexlist = df_indexlist.set_index('index_code')
+    row = df_indexlist.loc[code,:]
+    data_file = u'data/'+ f'{code}_till_{today}_daily.csv'
+    print(data_file)
 
-    row = df_indexlist.iloc[1,:]
-    code = row.index_code
-    name = row.index_name
-    title = f'{name}:{today}'
-    data_file = u'data/采掘_daily.csv'
-    df0 = pd.read_csv(data_file, parse_dates=True)
-    df = df0.iloc[::-1, :] #reverse the sequence
+    draw_a_candle_image(row, today,data_file)
 
-    dfsub = df.iloc[50:,:]
-    draw_candle_mpf(dfsub,title)
-
+def main(arg):
+    test_draw_candle()
 #sample
 
 #df_code = df_class_one['index_code']
@@ -192,10 +217,14 @@ def main(arg):
 #df_daily, msg = swindex.get_index_daily('801040')
 
 #pass
-
-
+def test_harvest():
+    today = datetime.datetime.today()
+    start = today - datetime.timedelta(days=125) #shoudl do 135
+    #print(str(start.date())) #output like '2020-03-04'
+    harvest_daily_info(list_file,start_data=str(start.date()), sleeptime = 0.5, stop = 10)
 
 
 if __name__ == "__main__":
     #arguments = parse_arguments()
     main(None)
+    #test_harvest()
