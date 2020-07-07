@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 from opendatatools import swindex
 import pandas as pd
 import plotly.graph_objects as go
 import mplfinance as mpf
+import matplotlib
 
 list_file = "data/sw_index_class1"
 
@@ -112,22 +114,38 @@ def draw_candle_plotly( df, image_file_name ):
 
 
 
-df = pd.read_csv(u'data/采掘_daily.csv')
+df0 = pd.read_csv(u'data/采掘_daily.csv',parse_dates=True)
+df = df0.iloc[::-1,:]
 img_file = u'data/采掘_daily.csv'
 
 
 #draw_candle_plotly(df, img_file)
 
 def draw_candle_mpf(df1):
+    '''
+    use mplfiance to draw chart
+    :param df1:
+    :return:
+    '''
     cols = list(df1)
     cols.insert(0, cols.pop(cols.index('date')))
-    df2 = df1.ix[:, cols]
+    df2 = df1.loc[:, cols]
     df2['date'] = pd.to_datetime(df2['date'])
     df3 = df2.set_index('date')
-    mpf.plot(df3, type='candle', mav=(5, 12, 26),datetime_format='%d-%B-%Y')
 
+    mc = mpf.make_marketcolors(up='r', down='g')
+    s = mpf.make_mpf_style(marketcolors=mc,rc={'font.family': 'SimHei','figure.facecolor':'lightgray'})
 
-draw_candle_mpf(df)
+    mpf.plot(df3, type='candle', mav=(5, 12, 26),datetime_format='%d-%m-%Y',
+             volume=True,
+             title=u'采掘，2020',style=s,
+             #savefig='data/testsave.png')
+             )
+
+    #fig.savefig("pgf-mwe.png")
+dfsub = df.iloc[50:,:]
+
+draw_candle_mpf(dfsub)
 
 #sample
 
