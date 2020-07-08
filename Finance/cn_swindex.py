@@ -6,6 +6,7 @@ import mplfinance as mpf
 import matplotlib
 import datetime
 from time import sleep
+import os
 
 list_file = "data/sw_index_class1"
 
@@ -150,7 +151,7 @@ def draw_candle_plotly( df, image_file_name ):
 
 #draw_candle_plotly(df, img_file)
 
-def draw_candle_mpf(df1, title = u"标题"):
+def draw_candle_mpf(df1, title = u"标题", image_file="test.png" ):
     '''
     use mplfiance to draw chart
     :param df1:
@@ -172,6 +173,7 @@ def draw_candle_mpf(df1, title = u"标题"):
              ylabel=u'指数值',
              scale_padding={'bottom': 1.1,'left':0.8},
              #savefig='data/testsave_t.png')
+             savefig=image_file
              )
 
     #fig.savefig("pgf-mwe.png")
@@ -179,7 +181,7 @@ def draw_candle_mpf(df1, title = u"标题"):
 
 
 
-def draw_a_candle_image(row, today, data_file):
+def draw_a_candle_image(row, today, data_file,image_file="test.png"):
     code = row.name # it's 801030
     name = row.index_name
     title = f'{name}:{today}'
@@ -189,7 +191,7 @@ def draw_a_candle_image(row, today, data_file):
     new_cols = [c if c != "vol" else "volume" for c in old_cols ]
     df.columns = new_cols
     dfsub = df #df.iloc[50:, :]
-    draw_candle_mpf(dfsub, title)
+    draw_candle_mpf(dfsub, title,image_file)
 
 def test_draw_candle():
     today = str(datetime.date.today())
@@ -199,11 +201,25 @@ def test_draw_candle():
     #     code = row.index_code
     #     name = row.index_name
     #     title = f'{name}:{today}'
-    code = 801030
     df_indexlist = df_indexlist.set_index('index_code')
-    row = df_indexlist.loc[code,:]
-    data_file = u'data/'+ f'{code}_till_{today}_daily.csv'
-    print(data_file)
+
+    files_under_data = os.listdir("data/")
+    for f in files_under_data:
+        if f.endswith(".csv") and  "daily" in f:
+            seg = f.split("_")
+            code = seg[0]
+            code_num = int(code)
+            row = df_indexlist.loc[code_num, :]
+            print(f'{f},{code_num}')
+            data_file = u'data/' + f
+            image_file = f'image/{code_num}_current.png'
+            draw_a_candle_image(row, today, data_file,image_file)
+
+    # code = 801040
+    #
+    # row = df_indexlist.loc[code,:]
+    # data_file = u'data/'+ f'{code}_till_{today}_daily.csv'
+    # print(data_file)
 
     draw_a_candle_image(row, today,data_file)
 
