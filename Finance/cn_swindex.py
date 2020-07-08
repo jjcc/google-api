@@ -7,6 +7,7 @@ import matplotlib
 import datetime
 from time import sleep
 import os
+import sys, getopt
 
 list_file = "data/sw_index_class1"
 
@@ -33,11 +34,40 @@ def get_class1_info(file):
     :return: list of class1 index data in form of (index, code, name)
     '''
     df_class_one = pd.read_csv(file)
-    df_rec = df_class_one[['index_code','index_name']].to_records()
-    tuple_list = [ x for x in df_rec]
+    df_rec = df_class_one[['index_code', 'index_name']].to_records()
+    tuple_list = [x for x in df_rec]
     return tuple_list
 
-def retrive_daily( info_tuple, start, end = None):
+
+def dump_components(index_file, sleeptime=0.0, stop=100):
+    '''
+    dump all components of indices
+    :param index_file:
+    :param sleeptime:
+    :param stop:
+    :return:
+    '''
+    class1_list = get_class1_info(index_file)
+    count = 0
+    for class1 in class1_list:
+        a_item = class1
+
+        code = a_item[1]
+        df_comp, msg = swindex.get_index_cons(str(code))
+
+        fn = str(a_item[1]) + f'_components.csv'
+        df_comp.to_csv("data/comp/" + fn)
+        count += 1
+        if count > stop:
+            break
+        if sleeptime > 0.0:
+            sleep(sleeptime)
+
+
+
+
+
+def retrive_a_daily(info_tuple, start, end=None):
     '''
     retrieve data of an index.
     :param info_tuple:  The tuple about the index with the format of (index, code, name)
@@ -49,28 +79,32 @@ def retrive_daily( info_tuple, start, end = None):
         start = '2020-01-01'
     if end == None:
         end = str(datetime.date.today())
-    df_daily,msg = swindex.get_index_daily(info_tuple[1],start,end)
+    df_daily, msg = swindex.get_index_daily(info_tuple[1], start, end)
     print(f'returned message: {msg}')
     return df_daily
 
 
-# class1_list = get_class1_info(list_file)
-# a_item = class1_list[1]
-# a_daily = retrive_daily(a_item)
-#
-# fn = a_item[2]+ "_daily.csv"
-#
-# a_daily.to_csv("data/" + fn)
 
-def harvest_daily_info(index_file, start_data, end_date = None, sleeptime = 0.0, stop=100 ):
+def harvest_daily_info(index_file, start_data, end_date=None, sleeptime=0.0, stop=100):
+    '''
+    Harvest daily info and save into csv files
+    call: get_class1_info(), retrive_a_daily()
+
+    :param index_file: the file contains the indices
+    :param start_data: start date of indices data
+    :param end_date: end date of indices data
+    :param sleeptime: sleep between 2 scraping. unit in seconds
+    :param stop: For test only, the number for stop
+    :return:
+    '''
     class1_list = get_class1_info(index_file)
     if end_date == None:
         end_date = str(datetime.date.today())
     count = 0
     for class1 in class1_list:
         a_item = class1
-        fn = str(a_item[1])+ f'_till_{end_date}_daily.csv'
-        a_daily = retrive_daily(a_item, start_data,end_date)
+        fn = str(a_item[1]) + f'_till_{end_date}_daily.csv'
+        a_daily = retrive_a_daily(a_item, start_data, end_date)
         a_daily.to_csv("data/" + fn)
         count += 1
         if count > stop:
@@ -79,12 +113,7 @@ def harvest_daily_info(index_file, start_data, end_date = None, sleeptime = 0.0,
             sleep(sleeptime)
 
 
-
-
-
-
-
-def draw_candle_plotly( df, image_file_name ):
+def draw_candle_plotly(df, image_file_name):
     trace1 = {
         'x': df.index,
         'open': df.open,
@@ -144,54 +173,67 @@ def draw_candle_plotly( df, image_file_name ):
         }
     })
     fig = go.Figure(data=data, layout=layout)
-    fig.write_image(image_file_name )
+    fig.write_image(image_file_name)
 
 
+# draw_candle_plotly(df, img_file)
 
-
-#draw_candle_plotly(df, img_file)
-
-def draw_candle_mpf(df1, title = u"标题", image_file="test.png" ):
+def draw_candle_mpf(a_index_df, title=u"标题", image_file="test.png"):
     '''
     use mplfiance to draw chart
-    :param df1:
+    :param a_index_df: the dataframe of a index
+    :param title: title of the image
+    :param image_file: the output image file
     :return:
     '''
-    cols = list(df1)
+    cols = list(a_index_df)
     cols.insert(0, cols.pop(cols.index('date')))
-    df2 = df1.loc[:, cols]
+    df2 = a_index_df.loc[:, cols]
     df2['date'] = pd.to_datetime(df2['date'])
     df3 = df2.set_index('date')
 
     mc = mpf.make_marketcolors(up='r', down='g')
-    s = mpf.make_mpf_style(marketcolors=mc,rc={'font.family': 'SimHei'})#,'figure.facecolor':'lightgray'})
+    s = mpf.make_mpf_style(marketcolors=mc, rc={'font.family': 'SimHei'})  # ,'figure.facecolor':'lightgray'})
 
-    mpf.plot(df3, type='candle', mav=(6, 12, 26),datetime_format='%Y-%m-%d',
+    mpf.plot(df3, type='candle', mav=(6, 12, 26), datetime_format='%Y-%m-%d',
              volume=True,
-             title=title,style=s,
+             title=title, style=s,
              tight_layout=True,
              ylabel=u'指数值',
-             scale_padding={'bottom': 1.1,'left':0.8},
-             #savefig='data/testsave_t.png')
+             ylabel_lower=u'成交量',
+             scale_padding={'bottom': 1.1, 'left': 0.8},
              savefig=image_file
              )
 
-    #fig.savefig("pgf-mwe.png")
+    # fig.savefig("pgf-mwe.png")
 
 
-
-
-def draw_a_candle_image(row, today, data_file,image_file="test.png"):
-    code = row.name # it's 801030
+def draw_a_candle_image(row, today, data_file, image_file="test.png"):
+    code = row.name  # it's like 801030
     name = row.index_name
     title = f'{name}:{today}'
     df0 = pd.read_csv(data_file, parse_dates=True)
     df = df0.iloc[::-1, :]  # reverse the sequence
     old_cols = df.columns
-    new_cols = [c if c != "vol" else "volume" for c in old_cols ]
+    new_cols = [c if c != "vol" else "volume" for c in old_cols]
     df.columns = new_cols
-    dfsub = df #df.iloc[50:, :]
-    draw_candle_mpf(dfsub, title,image_file)
+    dfsub = df  # df.iloc[50:, :]
+    draw_candle_mpf(dfsub, title, image_file)
+
+# def test_retreive_a_daily():
+#     class1_list = get_class1_info(list_file)
+#     a_item = class1_list[1]
+#     a_daily = retrive_a_daily(a_item)
+#     fn = a_item[2] + "_daily.csv"
+#     a_daily.to_csv("data/" + fn)
+
+# def test_retreive_a_daily():
+#     class1_list = get_class1_info(list_file)
+#     a_item = class1_list[1]
+#     a_daily = retrive_a_daily(a_item)
+#     fn = a_item[2] + "_daily.csv"
+#     a_daily.to_csv("data/" + fn)
+
 
 def test_draw_candle():
     today = str(datetime.date.today())
@@ -205,7 +247,7 @@ def test_draw_candle():
 
     files_under_data = os.listdir("data/")
     for f in files_under_data:
-        if f.endswith(".csv") and  "daily" in f:
+        if f.endswith(".csv") and "daily" in f:
             seg = f.split("_")
             code = seg[0]
             code_num = int(code)
@@ -213,7 +255,7 @@ def test_draw_candle():
             print(f'{f},{code_num}')
             data_file = u'data/' + f
             image_file = f'image/{code_num}_current.png'
-            draw_a_candle_image(row, today, data_file,image_file)
+            draw_a_candle_image(row, today, data_file, image_file)
 
     # code = 801040
     #
@@ -221,26 +263,54 @@ def test_draw_candle():
     # data_file = u'data/'+ f'{code}_till_{today}_daily.csv'
     # print(data_file)
 
-    draw_a_candle_image(row, today,data_file)
+    draw_a_candle_image(row, today, data_file)
 
-def main(arg):
-    test_draw_candle()
-#sample
+def test_get_components():
+    dump_components(list_file, sleeptime=0.5, stop=3)
 
-#df_code = df_class_one['index_code']
-#df_code_list = df_class_one['index_code'].to_list()
-#df_cons, msg = swindex.get_index_cons('801040')
-#df_daily, msg = swindex.get_index_daily('801040')
+# sample
 
-#pass
+# df_code = df_class_one['index_code']
+# df_code_list = df_class_one['index_code'].to_list()
+# df_cons, msg = swindex.get_index_cons('801040')
+# df_daily, msg = swindex.get_index_daily('801040')
+
+# pass
 def test_harvest():
     today = datetime.datetime.today()
-    start = today - datetime.timedelta(days=125) #shoudl do 135
-    #print(str(start.date())) #output like '2020-03-04'
-    harvest_daily_info(list_file,start_data=str(start.date()), sleeptime = 0.5, stop = 10)
+    start = today - datetime.timedelta(days=125)  # shoudl do 135
+    # print(str(start.date())) #output like '2020-03-04'
+    harvest_daily_info(list_file, start_data=str(start.date()), sleeptime=0.5, stop=10)
+
+
+
+
+def main(argv):
+    # parameter as : "-a h" or "-a d" for action harvest or draw
+    opts, args = getopt.getopt(argv, "a:", ["action="])
+
+    for opt, arg in opts:
+        if opt == '-a':
+            action = arg
+    if action == 'h': #harvest
+        today = datetime.datetime.today()
+        end = today + datetime.timedelta(days=1)
+        start = today - datetime.timedelta(days=135)
+        # print(str(start.date())) #output like '2020-03-04'
+        harvest_daily_info(list_file,
+                           start_data=str(start.date()),
+                           end_date=str(end.date()),
+                           sleeptime=0.5
+                           )
+        return
+    if action == 'd':
+        test_draw_candle()
+
 
 
 if __name__ == "__main__":
-    #arguments = parse_arguments()
-    main(None)
-    #test_harvest()
+    # arguments = parse_arguments()
+
+
+    main(sys.argv[1:])
+    # test_harvest()
