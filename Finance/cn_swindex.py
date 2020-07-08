@@ -49,12 +49,15 @@ def dump_components(index_file, sleeptime=0.0, stop=100):
     '''
     class1_list = get_class1_info(index_file)
     count = 0
+    cnt_comp = 0
     for class1 in class1_list:
         a_item = class1
 
         code = a_item[1]
         df_comp, msg = swindex.get_index_cons(str(code))
-
+        leng_df = len(df_comp.index)
+        cnt_comp += leng_df
+        print(f'current{code} has components of {leng_df}/{cnt_comp}(in total)')
         fn = str(a_item[1]) + f'_components.csv'
         df_comp.to_csv("data/comp/" + fn)
         count += 1
@@ -266,7 +269,7 @@ def test_draw_candle():
     draw_a_candle_image(row, today, data_file)
 
 def test_get_components():
-    dump_components(list_file, sleeptime=0.5, stop=3)
+    dump_components(list_file, sleeptime=0.8)
 
 # sample
 
@@ -305,6 +308,8 @@ def main(argv):
         return
     if action == 'd':
         test_draw_candle()
+    if action == 'c':
+        test_get_components()
 
 
 
