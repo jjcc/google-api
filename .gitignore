@@ -116,3 +116,4 @@ Create Short LinkX
 *.csv
 *.png
 backup/
+/credentials_quickstart.json
