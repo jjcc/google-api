@@ -108,7 +108,7 @@ def harvest_daily_info(index_file, start_data, end_date=None, sleeptime=0.0, sto
         a_item = class1
         fn = str(a_item[1]) + f'_till_{end_date}_daily.csv'
         a_daily = retrive_a_daily(a_item, start_data, end_date)
-        a_daily.to_csv("data/" + fn)
+        a_daily.to_csv(f"data/{end_date}/" + fn)
         count += 1
         if count > stop:
             break
@@ -212,6 +212,14 @@ def draw_candle_mpf(a_index_df, title=u"标题", image_file="test.png"):
 
 
 def draw_a_candle_image(row, today, data_file, image_file="test.png"):
+    """
+    Draw one candel image
+    :param row:
+    :param today:
+    :param data_file:
+    :param image_file:
+    :return:
+    """
     code = row.name  # it's like 801030
     name = row.index_name
     title = f'{name}:{today}'
@@ -222,6 +230,32 @@ def draw_a_candle_image(row, today, data_file, image_file="test.png"):
     df.columns = new_cols
     dfsub = df  # df.iloc[50:, :]
     draw_candle_mpf(dfsub, title, image_file)
+
+
+def draw_chart_by_db(code, name, file):
+    """
+    Draw a chart with data from DB
+    :param code:
+    :param name:
+    :return:
+    """
+    conn = sqlite3.connect('sw_index.db')
+    c = conn.cursor()
+
+    SQL_Query = pd.read_sql_query(
+        f'select *  from class1_index where index_code = \'{code}\'   ORDER BY date(date) DESC limit 89', conn)
+    df0 = pd.DataFrame(SQL_Query)
+    df = df0.iloc[::-1, :]  # reverse the sequence
+
+    today = str(datetime.date.today())
+
+    title = f'{name}:{today}'
+    old_cols = df.columns
+    new_cols = [c if c != "vol" else "volume" for c in old_cols]
+    df.columns = new_cols
+    dfsub = df  # df.iloc[50:, :]
+    draw_candle_mpf(dfsub, title, file)
+
 
 # def test_retreive_a_daily():
 #     class1_list = get_class1_info(list_file)
@@ -248,7 +282,9 @@ def test_draw_candle():
     #     title = f'{name}:{today}'
     df_indexlist = df_indexlist.set_index('index_code')
 
-    files_under_data = os.listdir("data/")
+    today = str(datetime.date.today())
+    data_dir = f'data/{today}/'
+    files_under_data = os.listdir(data_dir)
     for f in files_under_data:
         if f.endswith(".csv") and "daily" in f:
             seg = f.split("_")
@@ -256,8 +292,8 @@ def test_draw_candle():
             code_num = int(code)
             row = df_indexlist.loc[code_num, :]
             print(f'{f},{code_num}')
-            data_file = u'data/' + f
-            image_file = f'image/{code_num}_current.png'
+            data_file = data_dir + f
+            image_file = f'image/{today}/{code_num}_current.png'
             draw_a_candle_image(row, today, data_file, image_file)
 
     # code = 801040
@@ -267,6 +303,7 @@ def test_draw_candle():
     # print(data_file)
 
     draw_a_candle_image(row, today, data_file)
+
 
 def test_get_components():
     dump_components(list_file, sleeptime=0.8)
@@ -284,6 +321,58 @@ def test_harvest():
     start = today - datetime.timedelta(days=125)  # shoudl do 135
     # print(str(start.date())) #output like '2020-03-04'
     harvest_daily_info(list_file, start_data=str(start.date()), sleeptime=0.5, stop=10)
+
+import sqlite3
+
+def test_cvs2db():
+    conn = sqlite3.connect('sw_index.db')
+    c = conn.cursor()
+
+    # Create table #,index_code,index_name,date,open,high,low,close,vol,amount,change_pct
+    #c.execute('''CREATE TABLE class1_index
+    #             ( index_code text,date text, open real,high real,low real,close real,vol real, amount real,change_pct real)''')
+    #data_file = "data/2020-08-10/801010_till_2020-08-11_daily.csv"
+    today = str(datetime.date.today())
+    data_dir = f'data/{today}/'
+    files_under_data = os.listdir(data_dir)
+    for f in files_under_data:
+        if f.endswith(".csv") and "daily" in f:
+            data_file = data_dir + f
+            df = pd.read_csv(data_file, parse_dates=True)
+            for index, row in df.iterrows():
+                c.execute("INSERT INTO class1_index([index_code],[date], [open],[high],[low],[close],[vol],[amount],[change_pct]) values(?,?,?,?,?,?,?,?,?)",
+                          (row['index_code'],row['date'],
+                          row['open'],row['high'],row['low'],row['close'],
+                          row['vol'],row['amount'],row['change_pct']))
+
+    conn.commit()
+    c.close()
+    conn.close()
+    pass
+
+def test_dbdraw():
+
+    code = 801030  # it's like 801030
+    name = '样例'
+    #draw_chart_by_db(code, name)
+    today = str(datetime.date.today())
+    data_dir = f'data/{today}/'
+
+    df_indexlist = pd.read_csv(list_file)
+
+    # for index, row in df_indexlist.iterrows():
+    #     code = row.index_code
+    #     name = row.index_name
+    #     title = f'{name}:{today}'
+    df_indexlist = df_indexlist.set_index('index_code')
+    code_list = df_indexlist.index.tolist()
+
+    for code , row in df_indexlist.iterrows():
+        name = row["index_name"]
+        print("code:%d, name:%s"%(code,name))
+
+        image_file = f'image/{today}/{code}_current.png'
+        draw_chart_by_db(code, name, image_file)
 
 
 
@@ -310,7 +399,12 @@ def main(argv):
         test_draw_candle()
     if action == 'c':
         test_get_components()
-
+    if action == "cls1":
+        dump_sw_class1_list(list_file)
+    if action == "db":
+        test_cvs2db()
+    if action == 'dd':
+        test_dbdraw()
 
 
 if __name__ == "__main__":
