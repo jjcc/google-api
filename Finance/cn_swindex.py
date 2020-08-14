@@ -240,14 +240,19 @@ def draw_a_candle_image(row, today, data_file, image_file="test.png"):
     draw_candle_mpf(dfsub, title, image_file)
 
 
-def draw_chart_by_db(code, name, file):
+def draw_chart_by_db(code, name, file, connection = None):
     """
     Draw a chart with data from DB
+    :param file:
+    :param connection:
     :param code:
     :param name:
     :return:
     """
-    conn = sqlite3.connect('sw_index.db')
+    if connection is None:
+        conn = sqlite3.connect('sw_index.db')
+    else:
+        conn = connection
     c = conn.cursor()
 
     SQL_Query = pd.read_sql_query(
@@ -288,9 +293,6 @@ def harvest_missing():
     c = conn.cursor()
     c.execute("SELECT max(date(date)) as latest FROM class1_index;")
     latest_str = c.fetchone()[0]
-
-    c.close()
-    conn.close()
 
     # print(latest_str)
     latest_date = datetime.datetime.strptime(latest_str, "%Y-%m-%d")
@@ -405,9 +407,6 @@ def test_cvs2db():
 
 def test_dbdraw():
 
-    code = 801030  # it's like 801030
-    name = '样例'
-    #draw_chart_by_db(code, name)
     today = str(datetime.date.today())
     data_dir = f'data/{today}/'
 
@@ -424,7 +423,7 @@ def test_dbdraw():
         name = row["index_name"]
         print("code:%d, name:%s"%(code,name))
 
-        image_file = f'image/{today}/{code}_current.png'
+        image_file = f'image/cw_index/{code}_current.png'
         draw_chart_by_db(code, name, image_file)
 
 
