@@ -8,6 +8,7 @@ import datetime
 from time import sleep
 import os
 import sys, getopt
+import sqlite3
 
 list_file = "data/sw_index_class1"
 
@@ -278,6 +279,46 @@ def draw_chart_by_db(code, name, file):
 #     fn = a_item[2] + "_daily.csv"
 #     a_daily.to_csv("data/" + fn)
 
+def harvest_missing():
+    """
+    :return: dataframe of missing data in db
+    """
+    today = datetime.datetime.today()
+    conn = sqlite3.connect('sw_index.db')
+    c = conn.cursor()
+    c.execute("SELECT max(date(date)) as latest FROM class1_index;")
+    latest_str = c.fetchone()[0]
+
+    c.close()
+    conn.close()
+
+    # print(latest_str)
+    latest_date = datetime.datetime.strptime(latest_str, "%Y-%m-%d")
+    latest_date_next = latest_date + datetime.timedelta(days=1)
+    leatest_str_next = datetime.datetime.strftime(latest_date_next, "%Y-%m-%d")
+    # print(leatest_str_next)
+
+    today = datetime.datetime.today()
+    end = today + datetime.timedelta(days=1)
+    # start = latest
+    df = harvest_daily_info(list_file,
+                            start_data=leatest_str_next,
+                            end_date=str(end.date()),
+                            sleeptime=0.5
+                            )
+
+    for index, row in df.iterrows():
+        c.execute(
+            "INSERT INTO class1_index([index_code],[date], [open],[high],[low],[close],[vol],[amount],[change_pct]) values(?,?,?,?,?,?,?,?,?)",
+            (row['index_code'], row['date'],
+             row['open'], row['high'], row['low'], row['close'],
+             row['vol'], row['amount'], row['change_pct']))
+
+    conn.commit()
+    c.close()
+    conn.close()
+
+    return df
 
 def test_draw_candle():
     today = str(datetime.date.today())
@@ -329,26 +370,12 @@ def test_harvest():
     # print(str(start.date())) #output like '2020-03-04'
     harvest_daily_info(list_file, start_data=str(start.date()), sleeptime=0.5, stop=10)
 
-import sqlite3
+
 
 def test_harvest_missing():
-    today = datetime.datetime.today()
-    conn = sqlite3.connect('sw_index.db')
-    c = conn.cursor()
-    c.execute("SELECT max(date(date)) as latest FROM class1_index;")
-    latest = c.fetchone()[0]
-    print(latest)
 
+    df = harvest_missing()
 
-    today = datetime.datetime.today()
-    end = today + datetime.timedelta(days=1)
-    #start = latest
-    df = harvest_daily_info(list_file,
-                       start_data=latest,
-                       end_date=str(end.date()),
-                       sleeptime=0.5
-                       )
-    return df
 
 
 def test_cvs2db():
@@ -375,7 +402,6 @@ def test_cvs2db():
     conn.commit()
     c.close()
     conn.close()
-    pass
 
 def test_dbdraw():
 
