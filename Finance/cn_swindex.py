@@ -27,7 +27,7 @@ def dump_sw_class1_list(file):
     df_class_one.to_csv(file)
 
 
-#dump_sw_class1_list(list_file)
+# dump_sw_class1_list(list_file)
 
 
 def get_class1_info(file):
@@ -70,9 +70,6 @@ def dump_components(index_file, sleeptime=0.0, stop=100):
             sleep(sleeptime)
 
 
-
-
-
 def retrive_a_daily(info_tuple, start, end=None):
     '''
     retrieve data of an index.
@@ -88,7 +85,6 @@ def retrive_a_daily(info_tuple, start, end=None):
     df_daily, msg = swindex.get_index_daily(info_tuple[1], start, end)
     print(f'returned message: {msg}')
     return df_daily
-
 
 
 def harvest_daily_info(index_file, start_data, end_date=None, sleeptime=0.0, stop=100):
@@ -117,7 +113,7 @@ def harvest_daily_info(index_file, start_data, end_date=None, sleeptime=0.0, sto
         else:
             all_daily = all_daily.append(a_daily)
 
-        #a_daily.to_csv(f"data/{end_date}/" + fn)
+        # a_daily.to_csv(f"data/{end_date}/" + fn)
         count += 1
         if count > stop:
             break
@@ -208,6 +204,9 @@ def draw_candle_mpf(a_index_df, title=u"标题", image_file="test.png"):
     mc = mpf.make_marketcolors(up='r', down='g')
     s = mpf.make_mpf_style(marketcolors=mc, rc={'font.family': 'SimHei'})  # ,'figure.facecolor':'lightgray'})
 
+    if os.path.isfile(image_file):
+        os.remove(image_file)
+
     mpf.plot(df3, type='candle', mav=(6, 12, 26), datetime_format='%Y-%m-%d',
              volume=True,
              title=title, style=s,
@@ -242,7 +241,7 @@ def draw_a_candle_image(row, today, data_file, image_file="test.png"):
     draw_candle_mpf(dfsub, title, image_file)
 
 
-def draw_chart_by_db(code, name, file, connection = None):
+def draw_chart_by_db(code, name, file, connection=None):
     """
     Draw a chart with data from DB
     Called by: dbdraw()
@@ -283,7 +282,7 @@ def draw_chart_by_db(code, name, file, connection = None):
 #     a_daily.to_csv("data/" + fn)
 
 
-def harvest_missing(connection = None):
+def harvest_missing(connection=None):
     """
     filling the missing data into db
     :return: dataframe of missing data in db
@@ -306,14 +305,17 @@ def harvest_missing(connection = None):
 
     today = datetime.datetime.today()
     end = today + datetime.timedelta(days=1)
+    if leatest_str_next == str(end.date()):
+        return None
     # start = latest
     df = harvest_daily_info(list_file,
                             start_data=leatest_str_next,
                             end_date=str(end.date()),
-                            sleeptime=0.5
-                            )
-
+                            sleeptime=0.5) #,
+                            #stop = 3)
+    df['date'].apply(str)
     for index, row in df.iterrows():
+        row['date'] = datetime.datetime.strftime(row['date'], "%Y-%m-%d")
         c.execute(
             "INSERT INTO class1_index([index_code],[date], [open],[high],[low],[close],[vol],[amount],[change_pct]) values(?,?,?,?,?,?,?,?,?)",
             (row['index_code'], row['date'],
@@ -322,12 +324,13 @@ def harvest_missing(connection = None):
 
     conn.commit()
     c.close()
-    if connection is None: #This means conn was initialized inside this function
+    if connection is None:  # This means conn was initialized inside this function
         conn.close()
 
     return df
 
-def dbdraw(connection = None):
+
+def dbdraw(connection=None):
     '''
     Draw candle images from DB data
     :param connection:
@@ -348,9 +351,9 @@ def dbdraw(connection = None):
     for code, row in df_indexlist.iterrows():
         name = row["index_name"]
         print("code:%d, name:%s" % (code, name))
-
         image_file = f'image/cw_index/{code}_current.png'
         draw_chart_by_db(code, name, image_file, connection)
+
 
 def test_draw_candle():
     today = str(datetime.date.today())
@@ -382,6 +385,7 @@ def test_draw_candle():
 def test_get_components():
     dump_components(list_file, sleeptime=0.8)
 
+
 # sample
 
 # df_code = df_class_one['index_code']
@@ -397,11 +401,8 @@ def test_harvest():
     harvest_daily_info(list_file, start_data=str(start.date()), sleeptime=0.5, stop=10)
 
 
-
 def test_harvest_missing():
-
     df = harvest_missing()
-
 
 
 def test_cvs2db():
@@ -409,9 +410,9 @@ def test_cvs2db():
     c = conn.cursor()
 
     # Create table #,index_code,index_name,date,open,high,low,close,vol,amount,change_pct
-    #c.execute('''CREATE TABLE class1_index
+    # c.execute('''CREATE TABLE class1_index
     #             ( index_code text,date text, open real,high real,low real,close real,vol real, amount real,change_pct real)''')
-    #data_file = "data/2020-08-10/801010_till_2020-08-11_daily.csv"
+    # data_file = "data/2020-08-10/801010_till_2020-08-11_daily.csv"
     today = str(datetime.date.today())
     data_dir = f'data/{today}/'
     files_under_data = os.listdir(data_dir)
@@ -420,17 +421,18 @@ def test_cvs2db():
             data_file = data_dir + f
             df = pd.read_csv(data_file, parse_dates=True)
             for index, row in df.iterrows():
-                c.execute("INSERT INTO class1_index([index_code],[date], [open],[high],[low],[close],[vol],[amount],[change_pct]) values(?,?,?,?,?,?,?,?,?)",
-                          (row['index_code'],row['date'],
-                          row['open'],row['high'],row['low'],row['close'],
-                          row['vol'],row['amount'],row['change_pct']))
+                c.execute(
+                    "INSERT INTO class1_index([index_code],[date], [open],[high],[low],[close],[vol],[amount],[change_pct]) values(?,?,?,?,?,?,?,?,?)",
+                    (row['index_code'], row['date'],
+                     row['open'], row['high'], row['low'], row['close'],
+                     row['vol'], row['amount'], row['change_pct']))
 
     conn.commit()
     c.close()
     conn.close()
 
-def test_dbdraw():
 
+def test_dbdraw():
     dbdraw()
 
 
@@ -439,10 +441,19 @@ def run_app():
     Default routine run by main()
     :return:
     """
-    conn = sqlite3.connect('sw_index.db')
-    harvest_missing(conn)
-    test_dbdraw(conn)
+    try:
+        conn = sqlite3.connect('sw_index.db')
+    except Exception as e:
+        logging.error("Exception occurred when open db", exc_info=True)
+        return
+
+    if harvest_missing(conn) is None:
+        conn.close()
+        return
+
+    dbdraw(conn)
     conn.close()
+
 
 def main(argv):
     # parameter as : "-a h" or "-a d" for action harvest or draw
@@ -450,11 +461,12 @@ def main(argv):
 
     if (len(opts) == 0):
         run_app()
+        return
 
     for opt, arg in opts:
         if opt == '-a':
             action = arg
-    if action == 'h': #harvest
+    if action == 'h':  # harvest
         today = datetime.datetime.today()
         end = today + datetime.timedelta(days=1)
         start = today - datetime.timedelta(days=135)
@@ -476,13 +488,13 @@ def main(argv):
     if action == 'dd':
         test_dbdraw()
     if action == "hm":
-        #today = datetime.datetime.today()
-        #end = today + datetime.timedelta(days=1)
+        # today = datetime.datetime.today()
+        # end = today + datetime.timedelta(days=1)
         test_harvest_missing()
+
 
 if __name__ == "__main__":
     # arguments = parse_arguments()
-
 
     main(sys.argv[1:])
     # test_harvest()
