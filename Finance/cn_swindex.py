@@ -9,7 +9,9 @@ from time import sleep
 import os
 import sys, getopt
 import sqlite3
+import logging
 
+logging.basicConfig(filename='swindex_app.log', filemode='w', format='%(asctime)s  - %(levelname)s - %(message)s')
 list_file = "data/sw_index_class1"
 
 
@@ -221,7 +223,7 @@ def draw_candle_mpf(a_index_df, title=u"标题", image_file="test.png"):
 
 def draw_a_candle_image(row, today, data_file, image_file="test.png"):
     """
-    Draw one candel image
+    Draw one candle image
     :param row:
     :param today:
     :param data_file:
@@ -243,6 +245,9 @@ def draw_a_candle_image(row, today, data_file, image_file="test.png"):
 def draw_chart_by_db(code, name, file, connection = None):
     """
     Draw a chart with data from DB
+    Called by: dbdraw()
+    Call: draw_candle_mpf()
+
     :param file:
     :param connection:
     :param code:
@@ -277,19 +282,18 @@ def draw_chart_by_db(code, name, file, connection = None):
 #     fn = a_item[2] + "_daily.csv"
 #     a_daily.to_csv("data/" + fn)
 
-# def test_retreive_a_daily():
-#     class1_list = get_class1_info(list_file)
-#     a_item = class1_list[1]
-#     a_daily = retrive_a_daily(a_item)
-#     fn = a_item[2] + "_daily.csv"
-#     a_daily.to_csv("data/" + fn)
 
-def harvest_missing():
+def harvest_missing(connection = None):
     """
+    filling the missing data into db
     :return: dataframe of missing data in db
     """
     today = datetime.datetime.today()
-    conn = sqlite3.connect('sw_index.db')
+    if connection is None:
+        conn = sqlite3.connect('sw_index.db')
+    else:
+        conn = connection
+
     c = conn.cursor()
     c.execute("SELECT max(date(date)) as latest FROM class1_index;")
     latest_str = c.fetchone()[0]
@@ -318,9 +322,35 @@ def harvest_missing():
 
     conn.commit()
     c.close()
-    conn.close()
+    if connection is None: #This means conn was initialized inside this function
+        conn.close()
 
     return df
+
+def dbdraw(connection = None):
+    '''
+    Draw candle images from DB data
+    :param connection:
+    :return:
+    '''
+    today = str(datetime.date.today())
+    logging.info(f'{today} draw images')
+
+    df_indexlist = pd.read_csv(list_file)
+
+    # for index, row in df_indexlist.iterrows():
+    #     code = row.index_code
+    #     name = row.index_name
+    #     title = f'{name}:{today}'
+    df_indexlist = df_indexlist.set_index('index_code')
+    code_list = df_indexlist.index.tolist()
+
+    for code, row in df_indexlist.iterrows():
+        name = row["index_name"]
+        print("code:%d, name:%s" % (code, name))
+
+        image_file = f'image/cw_index/{code}_current.png'
+        draw_chart_by_db(code, name, image_file, connection)
 
 def test_draw_candle():
     today = str(datetime.date.today())
@@ -345,12 +375,6 @@ def test_draw_candle():
             data_file = data_dir + f
             image_file = f'image/{today}/{code_num}_current.png'
             draw_a_candle_image(row, today, data_file, image_file)
-
-    # code = 801040
-    #
-    # row = df_indexlist.loc[code,:]
-    # data_file = u'data/'+ f'{code}_till_{today}_daily.csv'
-    # print(data_file)
 
     draw_a_candle_image(row, today, data_file)
 
@@ -407,31 +431,25 @@ def test_cvs2db():
 
 def test_dbdraw():
 
-    today = str(datetime.date.today())
-    data_dir = f'data/{today}/'
-
-    df_indexlist = pd.read_csv(list_file)
-
-    # for index, row in df_indexlist.iterrows():
-    #     code = row.index_code
-    #     name = row.index_name
-    #     title = f'{name}:{today}'
-    df_indexlist = df_indexlist.set_index('index_code')
-    code_list = df_indexlist.index.tolist()
-
-    for code , row in df_indexlist.iterrows():
-        name = row["index_name"]
-        print("code:%d, name:%s"%(code,name))
-
-        image_file = f'image/cw_index/{code}_current.png'
-        draw_chart_by_db(code, name, image_file)
+    dbdraw()
 
 
-
+def run_app():
+    """
+    Default routine run by main()
+    :return:
+    """
+    conn = sqlite3.connect('sw_index.db')
+    harvest_missing(conn)
+    test_dbdraw(conn)
+    conn.close()
 
 def main(argv):
     # parameter as : "-a h" or "-a d" for action harvest or draw
     opts, args = getopt.getopt(argv, "a:", ["action="])
+
+    if (len(opts) == 0):
+        run_app()
 
     for opt, arg in opts:
         if opt == '-a':
