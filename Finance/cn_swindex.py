@@ -104,16 +104,23 @@ def harvest_daily_info(index_file, start_data, end_date=None, sleeptime=0.0, sto
     if end_date == None:
         end_date = str(datetime.date.today())
     count = 0
+    all_daily = None
     for class1 in class1_list:
         a_item = class1
         fn = str(a_item[1]) + f'_till_{end_date}_daily.csv'
         a_daily = retrive_a_daily(a_item, start_data, end_date)
-        a_daily.to_csv(f"data/{end_date}/" + fn)
+        if all_daily is None:
+            all_daily = a_daily
+        else:
+            all_daily = all_daily.append(a_daily)
+
+        #a_daily.to_csv(f"data/{end_date}/" + fn)
         count += 1
         if count > stop:
             break
         if sleeptime > 0.0:
             sleep(sleeptime)
+    return all_daily
 
 
 def draw_candle_plotly(df, image_file_name):
@@ -324,6 +331,26 @@ def test_harvest():
 
 import sqlite3
 
+def test_harvest_missing():
+    today = datetime.datetime.today()
+    conn = sqlite3.connect('sw_index.db')
+    c = conn.cursor()
+    c.execute("SELECT max(date(date)) as latest FROM class1_index;")
+    latest = c.fetchone()[0]
+    print(latest)
+
+
+    today = datetime.datetime.today()
+    end = today + datetime.timedelta(days=1)
+    #start = latest
+    df = harvest_daily_info(list_file,
+                       start_data=latest,
+                       end_date=str(end.date()),
+                       sleeptime=0.5
+                       )
+    return df
+
+
 def test_cvs2db():
     conn = sqlite3.connect('sw_index.db')
     c = conn.cursor()
@@ -405,7 +432,10 @@ def main(argv):
         test_cvs2db()
     if action == 'dd':
         test_dbdraw()
-
+    if action == "hm":
+        #today = datetime.datetime.today()
+        #end = today + datetime.timedelta(days=1)
+        test_harvest_missing()
 
 if __name__ == "__main__":
     # arguments = parse_arguments()
