@@ -4,7 +4,7 @@ function mo(elm){
 	//	return;
 	codeid = elm.parentElement.id	
 	var x = elm.parentElement.offsetLeft + 60;
-	var y = elm.parentElement.offsetTop + 80;
+	var y = elm.parentElement.offsetTop + 40;
 	$('#popup').css({
 		position: 'absolute',
 		left: x,
@@ -23,7 +23,7 @@ function mo(elm){
 		for (i in names) { 
 			//console.log("name:" + names[i]);
 			var name = names[i];
-			$("#swlist").append("<div class='ml-2'>" + name +"</div>");
+			$("#swlist").append("<div class='ml-2'><a href='#'>" + name +"</a></div>");
 		}
 		
 	});
