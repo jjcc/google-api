@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Stock Image</title>
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/thumbnail-gallery.css" rel="stylesheet">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114998708-1"></script>
+    <script>
+  window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+        gtag('config', 'UA-114998708-1');
+    </script>
+   <style>
+	td>img {
+		
+		width:360px;
+	}
+
+    td>img:hover{
+        overflow:visible
+    }
+	
+    .cs{
+        overflow:hidden;
+        width:300px;/*change this to whatever you want*/
+        height:150px;/*change this to whatever you want*/
+
+        /*Of course, to get the desired effect, the size of the image "<img>" below must be larger than the size mentioned above*/
+    }
+
+    .cs{
+        overflow:visible
+    }
+	
+	.container img {
+		width: 100%;
+	}
+	</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">Main stock and index graph</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Services</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+
+<!-- Page Content -->
+<div class="container">
+    <h1 class="text-center">SW Index</h1>
+    <div class="row text-center text-lg-left">
+                <div class="col-md-4 sector" id="801010"><b>801010.农林牧渔</b><br><img src="image/cw_index/801010_current.png" onmouseover=mo(this)></div>
+                <div class="col-md-4 sector" id="801020"><b>801020.采掘</b><br><img src="image/cw_index/801020_current.png" alt="" onmouseover=mo(this) ></div>
+                <div class="col-md-4 sector" id="801030"><b>801030.化工</b><br><img src="image/cw_index/801030_current.png" alt=""　></div>
+    </div>
+    <div class="row text-center text-lg-left">
+                <div class="col-md-4 sector" id="801040"><b>801040.钢铁</b><br><img src="image/cw_index/801040_current.png"  alt="" onmouseover="this.width='787'; this.height='577'" onmouseout="this.width='360'; this.height='264'"onmouseover="this.width='787'; this.height='577'" onmouseout="this.width='360'; this.height='264'" ></div>
+                <div class="col-md-4 sector" id="801050"><b>801050.有色金属</b><br><img src="image/cw_index/801050_current.png" alt=""　></div>
+                <div class="col-md-4 sector" id="801080"><b>801080.电子元器件</b><br><img src="image/cw_index/801080_current.png" alt=""　></div>
+    </div>
+	<div class="row text-center text-lg-left">            
+				<div class="col-md-4 sector" id="801110"><b>801110.家用电器</b><br><img src="image/cw_index/801110_current.png" alt=""　></div>
+                <div class="col-md-4 sector" id="801120"><b>801120.食品饮料</b><br><img src="image/cw_index/801120_current.png" alt=""　></div>
+                <div class="col-md-4 sector" id="801130"><b>801130.纺织服装</b><br><img src="image/cw_index/801130_current.png" alt=""　></div>
+    </div>
+	<div class="row text-center text-lg-left">	
+				<div class="col-md-4 sector" id="801140"><b>801140.轻工制造</b><br><img src="image/cw_index/801140_current.png" alt=""　></div>
+                <div class="col-md-4 sector" id="801150"><b>801150.医药生物</b><br><img src="image/cw_index/801150_current.png" alt=""　></div>
+                <div class="col-md-4 sector" id="801160"><b>801160.公用事业</b><br><img src="image/cw_index/801160_current.png" alt=""　></div>
+     </div>
+
+    <div class="row text-center text-lg-left">
+        <table>
+            <tr>
+                <div class="col-md-4 sector" id="801170"><b>801170.交通运输</b><br><img src="image/cw_index/801170_current.png" alt=""　></div>
+                <div class="col-md-4 sector" id="801180"><b>801180.房地产</b><br><img src="image/cw_index/801180_current.png" alt=""　></div>
+                <div class="col-md-4 sector" id="801200"><b>801200.商业贸易</b><br><img src="image/cw_index/801200_current.png" alt=""　></div>
+            </tr>
+            <tr>
+                <div class="col-md-4 sector" id="801210"><b>801210.餐饮旅游</b><br><img src="image/cw_index/801210_current.png" alt=""　></div>
+                <div class="col-md-4 sector" id="801230"><b>801230.综合</b><br><img src="image/cw_index/801230_current.png" alt=""　></div>
+                <div class="col-md-4 sector" id="801710"><b>801710.建筑材料</b><br><img src="image/cw_index/801710_current.png" alt=""　></div>
+            </tr>
+            <tr>
+                <div class="col-md-4 sector" id="801720"><b>801720.建筑装饰</b><br><img src="image/cw_index/801720_current.png" alt=""　></div>
+                <div class="col-md-4 sector" id="801730"><b>801730.电气设备</b><br><img src="image/cw_index/801730_current.png" alt=""　></div>
+                <div class="col-md-4 sector" id="801740"><b>801740.国防军工</b><br><img src="image/cw_index/801740_current.png" alt=""　></div>
+            </tr>
+            <tr>
+                <div class="col-md-4 sector" id="801750"><b>801750.计算机</b><br><img src="image/cw_index/801750_current.png" alt=""　></div>
+                <div class="col-md-4 sector" id="801760"><b>801760.传媒</b><br><img src="image/cw_index/801760_current.png" alt=""　></div>
+                <div class="col-md-4 sector" id="801770"><b>801770.通信</b><br><img src="image/cw_index/801770_current.png" alt=""　></div>
+            </tr>
+        </table>
+    </div>
+  
+    <div class="row text-center text-lg-left">
+        <table>
+            <tr>
+                <div class="col-md-4 sector" id="801780"><b>801780.银行</b><br><img src="image/cw_index/801780_current.png" alt=""　></div>
+                <div class="col-md-4 sector" id="801790"><b>801790.非银金融</b><br><img src="image/cw_index/801790_current.png" alt=""　></div>
+                <div class="col-md-4 sector" id="801880"><b>801880.汽车</b><br><img src="image/cw_index/801880_current.png" alt=""　></div>
+            </tr>
+            <tr>
+                <div class="col-md-4 sector" id="801890"><b>801890.机械设备</b><br><img src="image/cw_index/801890_current.png" alt=""　></div>
+                <div class="col-md-4 sector" id="801140"><b></b><br><img src="" alt=""　></div>
+                <div class="col-md-4 sector" id=""><b></b><br><img src="" alt=""　></div>
+            </tr>
+        </table>
+    </div>
+
+
+
+</div>
+<div id="popup" height="777" style="border:2px dotted gray;background-color: rgba(225, 225,255, 0.8);width:560px">
+  <span><img id="currentimg" src="" alt="" width="100%"></span>
+  <div class = "m-2">
+	<div class="container-fluid">
+		<div class="row" id="swlist">
+		</div>
+	</div>
+  </div>
+</div>
+<!-- /.container -->
+<footer class="py-5 bg-dark">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Micormacro 2020</p>
+    </div>
+    <!-- /.container -->
+</footer>
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="js/sw.js"></script>
+<script type="text/javascript">
+
+</script>
+
+
+</body>
+</html>
