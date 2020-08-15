@@ -435,6 +435,23 @@ def test_cvs2db():
 def test_dbdraw():
     dbdraw()
 
+def process_comp():
+    df_indexlist = pd.read_csv(list_file)
+    df_indexlist = df_indexlist.set_index('index_code')
+    for code, row in df_indexlist.iterrows():
+        name = row["index_name"]
+        print("code:%d, name:%s" % (code, name))
+        image_file = f'image/cw_index/{code}_current.png'
+        cvs_file = f'data/comp/{code}_components.csv'
+        json_file = f'data/compj/{code}_components.json'
+
+
+        #file = 'data/comp/801010_components.csv'
+        df_comp_one = pd.read_csv(cvs_file,dtype = {"stock_code" : "str"},index_col= 0)
+        df_selected = df_comp_one[['stock_code', 'stock_name', 'weight']]
+        df_selected.to_json(json_file)
+
+    pass
 
 def run_app():
     """
@@ -488,10 +505,9 @@ def main(argv):
     if action == 'dd':
         test_dbdraw()
     if action == "hm":
-        # today = datetime.datetime.today()
-        # end = today + datetime.timedelta(days=1)
         test_harvest_missing()
-
+    if action == "cm":
+        process_comp()
 
 if __name__ == "__main__":
     # arguments = parse_arguments()
