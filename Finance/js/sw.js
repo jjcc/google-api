@@ -1,9 +1,11 @@
 var hidebyself = false;
+var external_prefix = "http://quote.eastmoney.com/unify/r/";
+
 function mo(elm){
 	//if (hidebyself == true)
 	//	return;
 	codeid = elm.parentElement.id	
-	var x = elm.parentElement.offsetLeft + 60;
+	var x = elm.parentElement.offsetLeft + 20;
 	var y = elm.parentElement.offsetTop + 40;
 	$('#popup').css({
 		position: 'absolute',
@@ -20,10 +22,16 @@ function mo(elm){
 		$("#swlist").children().remove();
 		comp = json;
 		names = comp.stock_name;
+		codes = comp.stock_code;
 		for (i in names) { 
 			//console.log("name:" + names[i]);
 			var name = names[i];
-			$("#swlist").append("<div class='ml-2'><a href='#'>" + name +"</a></div>");
+			var code = codes[i];
+			var code_link = "0." +  code;
+			if (code.startsWith('6'))
+				code_link = "1." + code;
+			var whole_link = external_prefix + code_link;
+			$("#swlist").append("<div class='ml-2'><a href='"+ whole_link + "' target='_blank' >" + name +"</a></div>");
 		}
 		
 	});
