@@ -436,6 +436,9 @@ def test_dbdraw():
     dbdraw()
 
 def process_comp():
+    df_close = pd.read_csv(u"data/meta/all_stocks_close.csv",dtype = {"code" : "str"})
+    #df_close = df_close.set_index('code')
+    df_change = df_close[['code', 'changepercent']]
     df_indexlist = pd.read_csv(list_file)
     df_indexlist = df_indexlist.set_index('index_code')
     for code, row in df_indexlist.iterrows():
@@ -443,13 +446,18 @@ def process_comp():
         print("code:%d, name:%s" % (code, name))
         image_file = f'image/cw_index/{code}_current.png'
         cvs_file = f'data/comp/{code}_components.csv'
-        json_file = f'data/compj/{code}_components.json'
+        json_file = f'data/compj/{code}_componentsx.json'
 
 
         #file = 'data/comp/801010_components.csv'
         df_comp_one = pd.read_csv(cvs_file,dtype = {"stock_code" : "str"},index_col= 0)
         df_selected = df_comp_one[['stock_code', 'stock_name', 'weight']]
-        df_selected.to_json(json_file)
+        if True:
+
+            df_all = pd.merge(left=df_selected, right=df_change, left_on='stock_code',right_on='code', how='left')
+            df_all.to_json(json_file)
+
+        #df_selected.to_json(json_file)
 
     pass
 
