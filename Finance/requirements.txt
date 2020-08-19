@@ -10,5 +10,6 @@ plotly
 tushare
 mplfinance~=0.12.6a3
 OpenDataTools~=1.0.0
+html5lib
 
 
