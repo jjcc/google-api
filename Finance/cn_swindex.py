@@ -10,10 +10,16 @@ import os
 import sys, getopt
 import sqlite3
 import logging
+import tushare as ts
 
-logging.basicConfig(filename='swindex_app.log', filemode='w', format='%(asctime)s  - %(levelname)s - %(message)s')
+logging.basicConfig(filename='swindex_app.log', filemode='w', level='INFO',
+                    format='%(asctime)s  - %(levelname)s - %(message)s')
 list_file = "data/sw_index_class1"
 
+token = ""
+with open("tushare.token") as f:
+    token = f.readline()
+pro = ts.pro_api(token)
 
 def dump_sw_class1_list(file):
     '''
@@ -354,6 +360,10 @@ def dbdraw(connection=None):
         image_file = f'image/cw_index/{code}_current.png'
         draw_chart_by_db(code, name, image_file, connection)
 
+def get_all_stock_info():
+    df_close = ts.get_today_all()
+
+    df_close.to_csv(u"data/meta/all_stocks_close.csv")
 
 def test_draw_candle():
     today = str(datetime.date.today())
@@ -436,6 +446,7 @@ def test_dbdraw():
     dbdraw()
 
 def process_comp():
+    logging.info("processing components")
     df_close = pd.read_csv(u"data/meta/all_stocks_close.csv",dtype = {"code" : "str"})
     #df_close = df_close.set_index('code')
     df_change = df_close[['code', 'changepercent']]
@@ -444,7 +455,6 @@ def process_comp():
     for code, row in df_indexlist.iterrows():
         name = row["index_name"]
         print("code:%d, name:%s" % (code, name))
-        image_file = f'image/cw_index/{code}_current.png'
         cvs_file = f'data/comp/{code}_components.csv'
         json_file = f'data/compj/{code}_componentsx.json'
 
@@ -519,6 +529,8 @@ def main(argv):
 
 if __name__ == "__main__":
     # arguments = parse_arguments()
-
-    main(sys.argv[1:])
+    logging.info("<<run cn_swindex start")
+    #main(sys.argv[1:])
+    sleep(3)
+    logging.info("<<run cn_swindex end")
     # test_harvest()
