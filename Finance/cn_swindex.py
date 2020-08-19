@@ -456,7 +456,7 @@ def process_comp():
         name = row["index_name"]
         print("code:%d, name:%s" % (code, name))
         cvs_file = f'data/comp/{code}_components.csv'
-        json_file = f'data/compj/{code}_componentsx.json'
+        json_file = f'compj/{code}_componentsx.json'
 
 
         #file = 'data/comp/801010_components.csv'
@@ -485,6 +485,9 @@ def run_app():
     if harvest_missing(conn) is None:
         conn.close()
         return
+
+    #get_all_stock_info()
+    #process_comp()
 
     dbdraw(conn)
     conn.close()
@@ -530,7 +533,6 @@ def main(argv):
 if __name__ == "__main__":
     # arguments = parse_arguments()
     logging.info("<<run cn_swindex start")
-    #main(sys.argv[1:])
-    sleep(3)
+    main(sys.argv[1:])
     logging.info("<<run cn_swindex end")
     # test_harvest()
