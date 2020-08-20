@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Stock Image</title>
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/thumbnail-gallery.css" rel="stylesheet">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114998708-1"></script>
+    <script>
+  window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+        gtag('config', 'UA-114998708-1');
+    </script>
+   <style>
+	td>img {
+		
+		width:360px;
+	}
+
+    td>img:hover{
+        overflow:visible
+    }
+	
+    .cs{
+        overflow:hidden;
+        width:300px;/*change this to whatever you want*/
+        height:150px;/*change this to whatever you want*/
+
+        /*Of course, to get the desired effect, the size of the image "<img>" below must be larger than the size mentioned above*/
+    }
+
+    .cs{
+        overflow:visible
+    }
+	
+	.container img {
+		width: 100%;
+	}
+    .sizebar {
+        background-color:greenyellow;
+        display:inline-block;
+        height:10px;
+    }
+	</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">Sectors</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">关于</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">数据服务</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">联络我们</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+
+<!-- Page Content -->
+<div class="container">
+    <div class="row text-center text-lg-center m-4">
+        <div class="col-lg-4"></div>
+        <div class="col-lg-4">
+        <h1 class="text-center">SPDR Sector ETF</h1>
+        </div>
+        <div class="col-lg-4"></div>
+    </div>
+    <div class="row text-center text-lg-left">
+        <div class="col-md-4 sector" id="801010"><b>XLC:Communication Services </b>
+            <span class= "sizebar"  style="width:0%"> </span>
+                    <img src="image/sectors/etf_XLC_156.png" onmouseover=mo(this)>
+        </div>
+        <div class="col-md-4 sector" id="801020"><b>XLP:Consumer Staples</b>
+            <span class= "sizebar"  style="width:0%"> </span>
+                    <img src="image/sectors/etf_XLP_156.png" alt="" onmouseover=mo(this) >
+        </div>
+        <div class="col-md-4 sector" id="xly"><b>XLY:Consumer Discretionary</b>
+            <span class= "sizebar"  style="width:0%"> </span>
+                    <img src="image/sectors/etf_XLY_156.png" alt=""　>
+        </div>
+    </div>
+    <div class="row text-center text-lg-left">
+                <div class="col-md-4 sector" id="xle"><b>XLE:Energy</b>
+                    <span class= "sizebar"  style="width:0%"> </span>
+                    <img src="image/sectors/etf_XLE_156.png"  alt="" ></div>
+                <div class="col-md-4 sector" id="xlf"><b>XLF:Financial</b>
+                    <span class= "sizebar"  style="width:0%"> </span>
+                    <img src="image/sectors/etf_XLF_156.png" alt=""　></div>
+                <div class="col-md-4 sector" id="xlv"><b>XLV:Health Care</b>
+                    <span class= "sizebar"  style="width:0%"> </span>
+					<img src="image/sectors/etf_XLV_156.png" alt=""　></div>
+    </div>
+	<div class="row text-center text-lg-left">            
+				<div class="col-md-4 sector" id="xli"><b>XLI:Industrial</b>
+                    <span class= "sizebar"  style="width:0%"> </span>
+					<img src="image/sectors/etf_XLI_156.png" alt=""　></div>
+                <div class="col-md-4 sector" id="801120"><b>XLB:Materials</b>
+                    <span class= "sizebar"  style="width:0%"> </span>
+					<img src="image/sectors/etf_XLB_156.png" alt=""　></div>
+                <div class="col-md-4 sector" id="xlre"><b>XLRE:Real Estate</b>
+                    <span class= "sizebar"  style="width:0%"> </span>
+					<img src="image/sectors/etf_XLRE_156.png" alt=""　></div>
+    </div>
+	<div class="row text-center text-lg-left">	
+				<div class="col-md-4 sector" id="xlk"><b>XLK:Technology</b>
+                    <span class= "sizebar"  style="width:0%"> </span>
+					<img src="image/sectors/etf_XLK_156.png" alt=""　></div>
+                <div class="col-md-4 sector" id="xlu"><b>Utilities</b>
+                    <span class= "sizebar"  style="width:0%"> </span>
+					<img src="image/sectors/etf_XLU_156.png" alt=""　></div>
+                <div class="col-md-4 sector" id="801160"><b>XLSR:Sector Rotation </b>
+                    <span class= "sizebar"  style="width:0%"></span>
+					<img src="image/sectors/etf_XLSR_156.png" alt=""　></div>
+     </div>
+
+
+  
+
+
+
+
+</div>
+<div id="popup" height="777" style="border:2px dotted gray;background-color: rgba(255, 245,235, 0.85);max-width:560px">
+  <span><img id="currentimg" src="" alt="" width="100%"></span>
+   <hr/>
+    <div class = "m-2">
+	<div class="container-fluid">
+		<div class="row" id="swlist">
+		</div>
+	</div>
+  </div>
+</div>
+<!-- /.container -->
+<footer class="py-5 bg-dark">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Micromacro 2020</p>
+    </div>
+    <!-- /.container -->
+</footer>
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="js/sw.js"></script>
+<script type="text/javascript">
+
+</script>
+
+
+</body>
+</html>
