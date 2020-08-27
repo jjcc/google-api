@@ -21,6 +21,17 @@ dict_industry = { "KBE":"Bank","KRE":"Regional Banking","KCE":"Capital Markets",
                   "XITK":"FactSet Innovative Technology","XTL":"Telecom","XWEB":"Internet"
                 }
 
+dict_smartbeta = {"SPYD":"SPDR Portfolio S&P 500 High Dividend","SDY":"SPDR S&P Dividend","WDIV":"SPDR S&P Global Dividend",
+                "DWX":"SPDR S&P International Dividend","EDIV":"SPDR S&P Emerging Markets Dividend",
+                "QUS":"SPDR MSCI USA StrategicFactors","QWLD":"SPDR MSCI World StrategicFactors",
+                "QEFA":"SPDR MSCI EAFE StrategicFactors","QEMM":"SPDR MSCI Emerging Markets StrategicFactors",
+                "ONEY":"SPDR Russell 1000 Yield Focus","ONEV":"SPDR Russell 1000 Low Volatility Focus",
+                "ONEO":"SPDR Russell 1000 Momentum Focus","LGLV":"SPDR SSGA US Large Cap Low Volatility Index",
+                "SMLV":"SPDR SSGA US Small Cap Low Volatility Index","MMTM":"SPDR S&P 1500 Momentum Tilt",
+                "VLU":"SPDR S&P 1500 Value Tilt","DWFI":"SPDR Dorsey Wright® Fixed Income Allocation"
+                  }
+
+
 def render(  dict, template, template_file = None, ):
     if (template):
         return chevron.render(template, dict)
@@ -28,7 +39,7 @@ def render(  dict, template, template_file = None, ):
         result = chevron.render(f, dict)
     return result
 
-def render_sections(template_file, output_file):
+def render_sections(template_file, output_file,dict_input=dict_industry):
     with open(template_file, 'r') as f:
         template = f.read()
 
@@ -36,7 +47,7 @@ def render_sections(template_file, output_file):
     str_all = ""
     str_seg = str_pre
     count = 0
-    for k, v in dict_industry.items():
+    for k, v in dict_input.items():
         name_desc = k +":"+ v
         name_lower = k.lower()
 
@@ -57,11 +68,6 @@ def render_sections(template_file, output_file):
 
     with open(output_file, 'w') as fout:
         fout.write(str_all)
-
-def test_renders():
-    with open('single_item.templt', 'r') as f:
-        result = f.read()
-    print(result)
 
 
 def test_render():
