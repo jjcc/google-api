@@ -12,7 +12,7 @@ import sqlite3
 import logging
 import tushare as ts
 
-logging.basicConfig(filename='swindex_app.log', filemode='w', level='INFO',
+logging.basicConfig(filename='swindex_app.log', filemode='a', level='INFO',
                     format='%(asctime)s  - %(levelname)s - %(message)s')
 list_file = "data/sw_index_class1"
 
@@ -193,7 +193,7 @@ def draw_candle_plotly(df, image_file_name):
 
 # draw_candle_plotly(df, img_file)
 
-def draw_candle_mpf(a_index_df, title=u"标题", image_file="test.png"):
+def draw_candle_mpf(a_index_df, title="", image_file="test.png"):
     '''
     use mplfiance to draw chart
     :param a_index_df: the dataframe of a index
@@ -217,7 +217,7 @@ def draw_candle_mpf(a_index_df, title=u"标题", image_file="test.png"):
              volume=True,
              title=title, style=s,
              tight_layout=True,
-             ylabel=u'指数值',
+             ylabel=u'值',
              ylabel_lower=u'成交量',
              scale_padding={'bottom': 1.1, 'left': 0.8},
              savefig=image_file
