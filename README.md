@@ -1,2 +1,2 @@
 # google-api
-simple framework for G Suite API applicaion
+simple framework for G Suite API application
