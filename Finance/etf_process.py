@@ -17,19 +17,25 @@ with open("tiingo.token") as f:
 
 sector_etfs = {"XLC","XLP","XLY","XLE","XLF","XLV","XLI","XLB","XLRE","XLK","XLU","XLSR"}
 twenty1_century_etfs = {"KOMP","SIMS","HAIL","FITE","ROKT","CNRG"}
+
 industry_etfs = {"KBE","KRE","KCE","KIE","XAR","XTN","XBI","XPH","XHE","XHS",
                  "XOP","XES","XME","XRT","XHB","XSD","XSW","XNTK","XITK","XTL","XWEB"}
 
-
-
-data1=[]
-
-symbol = "MSFT"
+smartbeta_etfs = {"SPYD","SDY","WDIV","DWX","EDIV","QUS","QWLD","QEFA","QEMM","ONEY",
+                  "ONEV","ONEO","LGLV","SMLV","MMTM","VLU","DWFI"}
 
 
 
 
 def get_quote_info(symbol, start_date, end_date, file_name = None ):
+    """
+    get quote info from data provider
+    :param symbol:
+    :param start_date:
+    :param end_date:
+    :param file_name:
+    :return:
+    """
 
     url = "https://api.tiingo.com/tiingo/daily/{}/prices?startDate={}&endDate={}&format=csv&token={}".format(symbol,
                                                                                                              start_date,
@@ -73,7 +79,6 @@ def draw_chart_by_db(code, name, file, connection=None, days=89):
     # df.columns = new_cols
     dfsub = df  # df.iloc[50:, :]
     draw_candle_mpf(dfsub, title, file)
-
 
 def df_to_db(connection, df):
     """
@@ -127,17 +132,31 @@ def harvest_missing(symbol_list, connection=None):
     end = today + datetime.timedelta(days=1)
     if latest_str_next == str(end.date()):
         return None
-    for s in symbol_list:
-        df = get_quote_info(s,latest_str_next,str(end))
-        l = len(df)
-        print(f'symbol:{s}, lenght:{l}')
-        df_to_db(conn,df)
+
+    harvest(symbol_list,conn,latest_str_next)
 
     # # start = latest
     # df = harvest_daily_info(list_file,
     #                         start_data=leatest_str_next,
     #                         end_date=str(end.date()),
     #                         sleeptime=0.5) #,
+
+def harvest(symbol_list, connection, start_date, end_date = None):
+
+    conn = connection
+    if end_date ==  None:
+        today = datetime.datetime.today()
+        end = today + datetime.timedelta(days=1)
+        end_str = str(end)
+    else:
+        end_str = end_date
+
+    for s in symbol_list:
+        df = get_quote_info(s,start_date,end_str)
+        l = len(df)
+        print(f'symbol:{s}, lenght:{l}')
+        df_to_db(conn,df)
+
 
 def test_get_sectors():
     start_date = '2019-06-03'
@@ -148,31 +167,31 @@ def test_get_sectors():
         fn = f"data/{s}_{end_date}.csv"
         get_quote_info(s, start_date,end_date,fn)
 
-def test_draw_charts():
-    for s in sector_etfs:
-        fn = f"data/{s}_2020-08-18.csv"
-        df = pd.read_csv(fn)
-        draw_candle_mpf(df,f'ETF:{s}',f'image/etf_{s}.png')
+# def test_draw_charts():
+#     for s in sector_etfs:
+#         fn = f"data/{s}_2020-08-18.csv"
+#         df = pd.read_csv(fn)
+#         draw_candle_mpf(df,f'ETF:{s}',f'image/etf_{s}.png')
 
-def test_db_op():
-
-    conn = sqlite3.connect('etf.db')
-
-
-    #Create table #,index_code,index_name,date,open,high,low,close,vol,amount,change_pct
-    # c.execute('''CREATE TABLE daily_tick
-    #             (date text, open real,high real,low real,close real,volume real, adjLow real,adjClose real,
-    #             adjHigh real, adjOpen real, adjVolume, divCash, splitFactor, Symbol)''')
-    # #
-    for s in sector_etfs:
-        fn = f"data/{s}_2020-08-18.csv"
-        df = pd.read_csv(fn, parse_dates=True)
-        print("#")
-        df_to_db(conn, df)
-
-
-    conn.commit()
-    conn.close()
+# def test_db_op():
+#
+#     conn = sqlite3.connect('etf.db')
+#
+#
+#     #Create table #,index_code,index_name,date,open,high,low,close,vol,amount,change_pct
+#     # c.execute('''CREATE TABLE daily_tick
+#     #             (date text, open real,high real,low real,close real,volume real, adjLow real,adjClose real,
+#     #             adjHigh real, adjOpen real, adjVolume, divCash, splitFactor, Symbol)''')
+#     # #
+#     for s in sector_etfs:
+#         fn = f"data/{s}_2020-08-18.csv"
+#         df = pd.read_csv(fn, parse_dates=True)
+#         print("#")
+#         df_to_db(conn, df)
+#
+#
+#     conn.commit()
+#     conn.close()
 
 
 
