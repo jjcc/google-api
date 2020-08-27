@@ -198,14 +198,15 @@ def test_get_sectors():
 
 
 def test_draw_by_db():
-    s = "XLE"
+
     conn = sqlite3.connect('etf.db')
     #days: Set[int] = {89,111,123,134,145,156}
     days: Set[int] = { 111, 156}
-    for s in sector_etfs:
+    ls = industry_etfs
+    for s in ls:
         for d in days:
-            fn = f"image/etf_{s}_{d}.png"
-            draw_chart_by_db(s,"XLE",file=fn,connection=conn, days=d)
+            fn = f"image/sectors/etf_{s}_{d}.png"
+            draw_chart_by_db(s,s,file=fn,connection=conn, days=d)
 
 def test_harvest_missing():
     conn = sqlite3.connect('etf.db')
@@ -213,9 +214,31 @@ def test_harvest_missing():
     conn.commit()
     conn.close()
 
-#if __name__ == "__main__":
-#test_get_sectors()
-#test_draw_charts()
-#test_db_op()
-test_draw_by_db()
-#test_harvest_missing()
+def test_init_harvest():
+    delta = 225
+    today = datetime.datetime.today()
+    start = today - datetime.timedelta(days=delta)
+
+    conn = sqlite3.connect('etf.db')
+
+
+    lls = [industry_etfs,smartbeta_etfs,twenty1_century_etfs ]
+    for ls in lls:
+        print("##" + str(ls))
+        harvest(ls, conn, str(start))
+
+    conn.commit()
+    conn.close()
+
+
+
+def main():
+    #test_get_sectors()
+    #test_draw_charts()
+    #test_db_op()
+    test_draw_by_db()
+    #test_harvest_missing()
+    #test_init_harvest()
+
+if __name__ == "__main__":
+    main()
