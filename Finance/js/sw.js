@@ -14,6 +14,15 @@ function mo(elm){
 	})
 	$("#popup").show();
 	img = elm.src;
+	if(img.includes("/etf"))
+	{
+		var sloc = img.indexOf("/etf");
+		var fileName = img.substr(sloc + 1);
+		var components = fileName.split("_")
+		console.log(fileName);
+		var new_file = [components[0],components[1],"111.png"].join("_")
+		img = img.replace(fileName,new_file);
+	}
 	$("img#currentimg")[0].src = img;
 	
 	var comp;
