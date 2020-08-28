@@ -119,7 +119,9 @@ def harvest_missing(symbol_list, connection=None):
         conn = connection
 
     c = conn.cursor()
-    c.execute("SELECT max(date(date)) as latest FROM daily_tick;")
+    a_symbol = next(iter(symbol_list))
+    query = "SELECT max(date(date)) as latest FROM daily_tick WHERE Symbol = '%s' ;" % a_symbol
+    c.execute(query)
     latest_str = c.fetchone()[0]
 
     # print(latest_str)
@@ -202,7 +204,7 @@ def test_draw_by_db():
     conn = sqlite3.connect('etf.db')
     #days: Set[int] = {89,111,123,134,145,156}
     days: Set[int] = { 111, 156}
-    ls = industry_etfs
+    ls = smartbeta_etfs
     for s in ls:
         for d in days:
             fn = f"image/sectors/etf_{s}_{d}.png"
@@ -236,8 +238,8 @@ def main():
     #test_get_sectors()
     #test_draw_charts()
     #test_db_op()
-    test_draw_by_db()
-    #test_harvest_missing()
+    #test_draw_by_db()
+    test_harvest_missing()
     #test_init_harvest()
 
 if __name__ == "__main__":
