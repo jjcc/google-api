@@ -204,15 +204,28 @@ def test_draw_by_db():
     conn = sqlite3.connect('etf.db')
     #days: Set[int] = {89,111,123,134,145,156}
     days: Set[int] = { 111, 156}
-    ls = smartbeta_etfs
-    for s in ls:
-        for d in days:
-            fn = f"image/sectors/etf_{s}_{d}.png"
-            draw_chart_by_db(s,s,file=fn,connection=conn, days=d)
+
+    lls = [sector_etfs,industry_etfs,smartbeta_etfs, twenty1_century_etfs]
+    count = 0
+    for ls in lls:
+    #ls = smartbeta_etfs
+        print("##Drawing batch %d"%count)
+        for s in ls:
+            for d in days:
+                fn = f"image/sectors/etf_{s}_{d}.png"
+                draw_chart_by_db(s,s,file=fn,connection=conn, days=d)
+        count += 1
+
 
 def test_harvest_missing():
     conn = sqlite3.connect('etf.db')
-    harvest_missing(sector_etfs,conn)
+    lls = [ sector_etfs,industry_etfs,smartbeta_etfs,twenty1_century_etfs]
+    count = 0
+    for ls in lls:
+        print("## start batch %d"%count)
+        harvest_missing( ls ,conn)
+        count += 1
+
     conn.commit()
     conn.close()
 
@@ -238,8 +251,8 @@ def main():
     #test_get_sectors()
     #test_draw_charts()
     #test_db_op()
-    #test_draw_by_db()
-    test_harvest_missing()
+    test_draw_by_db()
+    #test_harvest_missing()
     #test_init_harvest()
 
 if __name__ == "__main__":
