@@ -30,6 +30,8 @@ dict_smartbeta = {"SPYD":"Portfolio S&P 500 High Dividend","SDY":"S&P Dividend",
                 "VLU":"S&P 1500 Value Tilt","DWFI":"Dorsey Wright® Fixed Income Allocation"
                   }
 
+dic_twenty1centry = {"KOMP":"New Economies Composite","SIMS":"Intelligent Structures","HAIL":"Smart Mobility",
+                     "FITE":"Future Security","ROKT":"Final Frontiers","CNRG":"Clean Power"}
 
 def render(  dict, template, template_file = None, ):
     if (template):
@@ -71,8 +73,8 @@ def render_sections(template_file, output_file,dict_input=dict_industry):
 
 def test_render():
     templt = 'single_item.templt'
-    file_res = 'generated_sb.html'
-    render_sections(templt,file_res,dict_smartbeta)
+    file_res = 'generated_21ct.html'
+    render_sections(templt,file_res,dic_twenty1centry)
 
 def main():
     test_render()
