@@ -43,7 +43,7 @@ function mo(elm){
 				code_link = "1." + code;
 			var whole_link = external_prefix + code_link;
 			var bgcolor = lut(changepct);
-			$("#swlist").append("<div class='ml-2'><a href='" + whole_link +
+			$("#swlist").append("<div class='ml-2 symbol_item' id='" + code + "'><a href='" + whole_link +
 				"' target='_blank' style='background-color:"+ bgcolor + ";color:black'>" + name +"</a></div>");
 		}
 		console.log(lut(3.5));
