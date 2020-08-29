@@ -89,6 +89,7 @@ function lut(  pctg ){
 	}
 	else {
 		//var grade =  Math.floor( pctg - 0.5 );
+		grade = grade * (-1);
 		return list_g[grade];
 	}
 }
