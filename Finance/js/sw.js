@@ -4,6 +4,14 @@ var external_prefix = "http://quote.eastmoney.com/unify/r/";
 function mo(elm){
 	//if (hidebyself == true)
 	//	return;
+	let isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
+	if ( isMobile){
+		$("#mobile").text("Moble")
+	}
+	else {
+		$("#mobile").text("Notmoble")
+		console.log("Not mobile")
+	}
 	codeid = elm.parentElement.id	
 	var x = elm.parentElement.offsetLeft + 20;
 	var y = elm.parentElement.offsetTop + 40;
