@@ -24,8 +24,11 @@ industry_etfs = {"KBE","KRE","KCE","KIE","XAR","XTN","XBI","XPH","XHE","XHS",
 smartbeta_etfs = {"SPYD","SDY","WDIV","DWX","EDIV","QUS","QWLD","QEFA","QEMM","ONEY",
                   "ONEV","ONEO","LGLV","SMLV","MMTM","VLU","DWFI"}
 
+ishare_sector1_etf = {"IBB","IHI","IYW","IGV","IXN","SOXX","IGF","ITA","IGM","IYH","IXJ","ITB","IYG","IYF","IXC","IYC",
+                      "IHF","IYJ","IYT","IDU","EUFN","IYK","KXI","RING","IYE","IGE","MXI","IYZ","IHE","IYM","IXP"}
 
-
+ishare_sector2_etf = {"PICK","IEO","RXI","IXG","SLVP","WOOD","IAT","EXI","IDNA","JXI","IEZ","IHAK","IAI","IETC","IAK",
+                      "FILL","IGN","VEGI","IEIH","IFRA","IEDI","IEHS","EMIF","IEME","IECS","IEFN"}
 
 def get_quote_info(symbol, start_date, end_date, file_name = None ):
     """
@@ -205,7 +208,8 @@ def test_draw_by_db():
     #days: Set[int] = {89,111,123,134,145,156}
     days: Set[int] = { 111, 156}
 
-    lls = [sector_etfs,industry_etfs,smartbeta_etfs, twenty1_century_etfs]
+    #lls = [sector_etfs,industry_etfs,smartbeta_etfs, twenty1_century_etfs]
+    lls = [ishare_sector1_etf, ishare_sector2_etf]
     count = 0
     for ls in lls:
     #ls = smartbeta_etfs
@@ -237,7 +241,8 @@ def test_init_harvest():
     conn = sqlite3.connect('etf.db')
 
 
-    lls = [industry_etfs,smartbeta_etfs,twenty1_century_etfs ]
+    #lls = [industry_etfs,smartbeta_etfs,twenty1_century_etfs ]
+    lls = [ishare_sector1_etf,ishare_sector2_etf]
     for ls in lls:
         print("##" + str(ls))
         harvest(ls, conn, str(start))

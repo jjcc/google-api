@@ -33,6 +33,33 @@ dict_smartbeta = {"SPYD":"Portfolio S&P 500 High Dividend","SDY":"S&P Dividend",
 dic_twenty1centry = {"KOMP":"New Economies Composite","SIMS":"Intelligent Structures","HAIL":"Smart Mobility",
                      "FITE":"Future Security","ROKT":"Final Frontiers","CNRG":"Clean Power"}
 
+###############iShare Sector (L)############################
+dict_ishare_sector1 = {"IBB":"Nasdaq Biotechnology","IHI":"U.S. Medical Devices","IYW":"U.S. Technology ",
+                       "IGV":"Expanded Tech-Software Sector ","IXN":"Global Tech","SOXX":"PHLX Semiconductor ",
+                       "IGF":"Global Infrastructure","ITA":"U.S. Aerospace & Defense","IGM":"Expanded Tech Sector",
+                       "IYH":"U.S. Healthcare","IXJ":"Global Healthcare","ITB":"U.S. Home Construction",
+                       "IYG":"U.S. Financial Services","IYF":"U.S. Financials ","IXC":"Global Energy",
+                       "IYC":"U.S. Consumer Services","IHF":"U.S. Healthcare Providers","IYJ":"U.S. Industrials",
+                       "IYT":"Transportation Average","IDU":"U.S. Utilities","EUFN":"MSCI Europe Financials",
+                       "IYK":"U.S. Consumer Goods","KXI":"Global Consumer Staples","RING":"MSCI Global Gold Miners",
+                       "IYE":"U.S. Energy","IGE":"North American Natural Resources","MXI":"Global Materials",
+                       "IYZ":"U.S. Telecommunications","IHE":"U.S. Pharmaceuticals","IYM":"U.S. Basic Materials",
+                       "IXP":"Global Comm Services "}
+####iShare Sector 2 (s)##########
+dict_ishare_sector2 = {"PICK":"MSCI Global Metals & Mining Producers","IEO":"U.S. Oil & Gas Exploration & Production",
+                       "RXI":"Global Consumer Discretionary","IXG":"Global Financials",
+                       "SLVP":"MSCI Global Silver and Metals Miners","WOOD":"Global Timber & Forestry",
+                       "IAT":"U.S. Regional Banks","EXI":"Global Industrials","IDNA":"Genomics Immunology and Healthcare",
+                       "JXI":"Global Utilities","IEZ":"U.S. Oil Equipment & Services","IHAK":"Cybersecurity and Tech",
+                       "IAI":"U.S. Broker-Dealers & Securities Exchanges","IETC":"Evolved U.S. Technology",
+                       "IAK":"U.S. Insurance","FILL":"MSCI Global Energy Producers",
+                       "IGN":"North American Tech-Multimedia Networking","VEGI":"MSCI Global Agriculture Producers",
+                       "IEIH":"Evolved U.S. Innovative Healthcare","IFRA":"U.S. Infrastructure",
+                       "IEDI":"Evolved U.S. Discretionary Spending","IEHS":"Evolved U.S. Healthcare Staples",
+                       "EMIF":"Emerging Markets Infrastructure","IEME":"Evolved U.S. Media and Entertainment",
+                       "IECS":"Evolved U.S. Consumer Staples","IEFN":"Evolved U.S. Financials"}
+
+
 def render(  dict, template, template_file = None, ):
     if (template):
         return chevron.render(template, dict)
@@ -72,9 +99,13 @@ def render_sections(template_file, output_file,dict_input=dict_industry):
 
 
 def test_render():
+    """
+    Generate a section of HTML code following the protocol that can display graphs
+    :return:
+    """
     templt = 'single_item.templt'
-    file_res = 'generated_21ct.html'
-    render_sections(templt,file_res,dic_twenty1centry)
+    file_res = 'generated_ishare2.html'
+    render_sections(templt,file_res,dict_ishare_sector2)
 
 def main():
     test_render()
