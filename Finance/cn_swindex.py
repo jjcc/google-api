@@ -76,10 +76,10 @@ def dump_components(index_file, sleeptime=0.0, stop=100):
             sleep(sleeptime)
 
 
-def retrive_a_daily(info_tuple, start, end=None):
+def retrive_a_daily(code_info, start, end=None):
     '''
     retrieve data of an index.
-    :param info_tuple:  The tuple about the index with the format of (index, code, name)
+    :param code_info:  The tuple about the index with the format of (index, code, name)
     :param start: start date string in format of 'yyyy-mm-dd'
     :param end:   end date string in format of 'yyyy-mm-dd'
     :return: data frame of the daily history
@@ -88,7 +88,12 @@ def retrive_a_daily(info_tuple, start, end=None):
         start = '2020-01-01'
     if end == None:
         end = str(datetime.date.today())
-    df_daily, msg = swindex.get_index_daily(info_tuple[1], start, end)
+    if isinstance(code_info, tuple):
+        df_daily, msg = swindex.get_index_daily(code_info[1], start, end)
+    else:
+        code_list = [ str(code[1]) for code in code_info]
+        df_daily, msg = swindex.get_index_daily(code_list, start, end)
+
     print(f'returned message: {msg}')
     return df_daily
 
@@ -108,24 +113,31 @@ def harvest_daily_info(index_file, start_data, end_date=None, sleeptime=0.0, sto
     class1_list = get_class1_info(index_file)
     if end_date == None:
         end_date = str(datetime.date.today())
-    count = 0
-    all_daily = None
-    for class1 in class1_list:
-        a_item = class1
-        fn = str(a_item[1]) + f'_till_{end_date}_daily.csv'
-        a_daily = retrive_a_daily(a_item, start_data, end_date)
-        if all_daily is None:
-            all_daily = a_daily
-        else:
-            all_daily = all_daily.append(a_daily)
+    # count = 0
+    # all_daily = None
+    # test = True
+    # if test:
 
-        # a_daily.to_csv(f"data/{end_date}/" + fn)
-        count += 1
-        if count > stop:
-            break
-        if sleeptime > 0.0:
-            sleep(sleeptime)
+    ###!!!With modification of swindex in opendatatools
+    all_daily = retrive_a_daily(class1_list, start_data, end_date)
     return all_daily
+
+    # for class1 in class1_list:
+    #     a_item = class1
+    #     fn = str(a_item[1]) + f'_till_{end_date}_daily.csv'
+    #     a_daily = retrive_a_daily(a_item, start_data, end_date)
+    #     if all_daily is None:
+    #         all_daily = a_daily
+    #     else:
+    #         all_daily = all_daily.append(a_daily)
+    #
+    #     # a_daily.to_csv(f"data/{end_date}/" + fn)
+    #     count += 1
+    #     if count > stop:
+    #         break
+    #     if sleeptime > 0.0:
+    #         sleep(sleeptime)
+    # return all_daily
 
 
 def draw_candle_plotly(df, image_file_name):
@@ -288,7 +300,7 @@ def draw_chart_by_db(code, name, file, connection=None):
 #     a_daily.to_csv("data/" + fn)
 
 
-def harvest_missing(connection=None):
+def harvest_missing(connection=None, test = False):
     """
     filling the missing data into db
     :return: dataframe of missing data in db
@@ -303,6 +315,9 @@ def harvest_missing(connection=None):
     c.execute("SELECT max(date(date)) as latest FROM class1_index;")
     latest_str = c.fetchone()[0]
 
+    # if test:
+    #     latest_str = '2020-08-24'
+
     # print(latest_str)
     latest_date = datetime.datetime.strptime(latest_str, "%Y-%m-%d")
     latest_date_next = latest_date + datetime.timedelta(days=1)
@@ -311,6 +326,7 @@ def harvest_missing(connection=None):
 
     today = datetime.datetime.today()
     end = today + datetime.timedelta(days=1)
+
     if leatest_str_next == str(end.date()):
         return None
     # start = latest
