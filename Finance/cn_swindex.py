@@ -456,7 +456,7 @@ def process_comp():
         name = row["index_name"]
         print("code:%d, name:%s" % (code, name))
         cvs_file = f'data/comp/{code}_components.csv'
-        json_file = f'compj/{code}_componentsx.json'
+        json_file = f'data/compj/{code}_componentsx.json'
 
 
         #file = 'data/comp/801010_components.csv'

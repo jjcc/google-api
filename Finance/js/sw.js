@@ -27,7 +27,7 @@ function mo(elm){
 	
 	var comp;
 	var file = codeid + "_componentsx.json";
-	$.getJSON("compj/" + file, function(json) {
+	$.getJSON("data/compj/" + file, function(json) {
 		$("#swlist").children().remove();
 		comp = json;
 		names = comp.stock_name;
