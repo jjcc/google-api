@@ -1,6 +1,7 @@
 var hidebyself = false;
 var external_prefix = "http://quote.eastmoney.com/unify/r/";
 
+var external_prefix_m = "https://wap.eastmoney.com/quote/stock/"; //0.300106.html
 function mo(elm){
 	//if (hidebyself == true)
 	//	return;
@@ -50,6 +51,8 @@ function mo(elm){
 			if (code.startsWith('6'))
 				code_link = "1." + code;
 			var whole_link = external_prefix + code_link;
+			if (isMobile)
+				whole_link = external_prefix_m + code_link + ".html";
 			var bgcolor = lut(changepct);
 			$("#swlist").append("<div class='ml-2 symbol_item' id='" + code + "'><a href='" + whole_link +
 				"' target='_blank' style='background-color:"+ bgcolor + ";color:black'>" + name +"</a></div>");
