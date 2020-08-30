@@ -319,6 +319,10 @@ def harvest_missing(connection=None):
                             end_date=str(end.date()),
                             sleeptime=0.5) #,
                             #stop = 3)
+    if len(df)  == 0:
+        if connection is None:  # This means conn was initialized inside this function
+            conn.close()
+        return df
     df['date'].apply(str)
     for index, row in df.iterrows():
         row['date'] = datetime.datetime.strftime(row['date'], "%Y-%m-%d")
