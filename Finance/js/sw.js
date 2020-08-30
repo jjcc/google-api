@@ -75,15 +75,17 @@ $(".sector img").mouseover( function(){
 
 
 function lut(  pctg ){
-	var list = {9:"#FE0000",8:"#FF1919",7:"#FF3333",6:"#FF4D4D",
-		5:"#FF6666",4:"#FF7F7F",3:"#FF9999",2:"#FFB2B2",
-		1:"#FFCCCC",0:"#FFE5E5"};
-	var list_g = {9:"#00FE00",8:"#19FF19",7:"#33FF33",6:"#4DFF4D",
-		5:"#66FF66", 4:"#7FFF7F",3:"#99FF99",2:"#B2FFB2",
-		1:"#CCFFCC",0:"#E5FFE5"};
+	var list = {10:"#FE0000",9:"#FF1919",8:"#FF3333",7:"#FF4D4D",
+		6:"#FF6666",5:"#FF7F7F",4:"#FF9999",3:"#FFB2B2",
+		2:"#FFCCCC",1:"#FFE5E5",0:"#FFFFFF"};
+	var list_g = {10:"#00FE00",9:"#19FF19",8:"#33FF33",7:"#4DFF4D",
+		6:"#66FF66", 5:"#7FFF7F",4:"#99FF99",3:"#B2FFB2",
+		2:"#CCFFCC",1:"#E5FFE5",0:"#FFFFFF"};
 	if(pctg>10)
 		pctg = 9.99;
-	var grade =  Math.floor( pctg + 0.5 ) -1 ;
+	if(pctg<-10)
+		pctg = -9.99
+	var grade =  Math.floor( pctg + 0.5 )  ;
 	if (pctg >= 0) {
 		return list[grade];
 	}
