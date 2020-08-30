@@ -465,6 +465,8 @@ def process_comp():
         if True:
 
             df_all = pd.merge(left=df_selected, right=df_change, left_on='stock_code',right_on='code', how='left')
+            df_all.sort_values("changepercent", ascending=False, inplace=True)
+            df_all.reset_index(drop=True,inplace=True)
             df_all.to_json(json_file)
 
         #df_selected.to_json(json_file)
