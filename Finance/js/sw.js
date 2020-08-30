@@ -83,7 +83,7 @@ function lut(  pctg ){
 		1:"#CCFFCC",0:"#E5FFE5"};
 	if(pctg>10)
 		pctg = 9.99;
-	var grade =  Math.floor( pctg + 0.5 );
+	var grade =  Math.floor( pctg + 0.5 ) -1 ;
 	if (pctg >= 0) {
 		return list[grade];
 	}
