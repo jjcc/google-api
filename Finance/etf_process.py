@@ -9,6 +9,7 @@ from cn_swindex import draw_candle_mpf
 import requests
 import pandas as pd
 import datetime
+import time
 #from datetime import datetime,timedelta
 
 token1=""
@@ -81,7 +82,8 @@ def draw_chart_by_db(code, name, file, connection=None, days=89):
     # new_cols = [c if c != "vol" else "volume" for c in old_cols]
     # df.columns = new_cols
     dfsub = df  # df.iloc[50:, :]
-    draw_candle_mpf(dfsub, title, file)
+    sz = (8.0, 5.75)
+    draw_candle_mpf(dfsub, title, file,fsize = sz)
 
 def df_to_db(connection, df):
     """
@@ -172,11 +174,28 @@ def test_get_sectors():
         fn = f"data/{s}_{end_date}.csv"
         get_quote_info(s, start_date,end_date,fn)
 
-# def test_draw_charts():
-#     for s in sector_etfs:
-#         fn = f"data/{s}_2020-08-18.csv"
-#         df = pd.read_csv(fn)
-#         draw_candle_mpf(df,f'ETF:{s}',f'image/etf_{s}.png')
+def test_draw_charts():
+    #for s in sector_etfs:
+    s = 'XLB'
+    fn = f"data/{s}_2020-08-18.csv"
+    df = pd.read_csv(fn)
+    size0 = (8.0, 5.75)
+    scales = (1,0.7,0.3,0.15)
+    sizes = [ (size0[0] * sc, size0[1]*sc) for sc in scales]
+
+    count = 0
+    for sz in sizes:
+        ten_s = scales[count] * 10
+        start = time.process_time()
+        if count == 3:
+            param = { 'volume': False,'ylabel':"", 'ylabel_lower':"",'axisoff':True,
+                      'update_width_config':{'line_width':0.4}}
+            df = df.iloc[0:68]
+            draw_candle_mpf(df, "", f'image/etf_{s}_{ten_s}.png', fsize=sz, other_param = param)
+        else:
+            draw_candle_mpf(df,f'ETF:{s}',f'image/etf_{s}_{ten_s}.png',fsize = sz)
+        print(time.process_time() - start)
+        count += 1
 
 # def test_db_op():
 #
@@ -208,8 +227,8 @@ def test_draw_by_db():
     #days: Set[int] = {89,111,123,134,145,156}
     days: Set[int] = { 111, 156}
 
-    #lls = [sector_etfs,industry_etfs,smartbeta_etfs, twenty1_century_etfs]
-    lls = [ishare_sector1_etf, ishare_sector2_etf]
+    lls = [sector_etfs,industry_etfs,smartbeta_etfs, twenty1_century_etfs]
+    #lls = [ishare_sector1_etf, ishare_sector2_etf]
     count = 0
     for ls in lls:
     #ls = smartbeta_etfs
@@ -223,7 +242,7 @@ def test_draw_by_db():
 
 def test_harvest_missing():
     conn = sqlite3.connect('etf.db')
-    lls = [ sector_etfs,industry_etfs,smartbeta_etfs,twenty1_century_etfs]
+    lls = [ sector_etfs,industry_etfs,smartbeta_etfs,twenty1_century_etfs,ishare_sector1_etf,ishare_sector2_etf]
     count = 0
     for ls in lls:
         print("## start batch %d"%count)

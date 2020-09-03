@@ -205,7 +205,7 @@ def draw_candle_plotly(df, image_file_name):
 
 # draw_candle_plotly(df, img_file)
 
-def draw_candle_mpf(a_index_df, title="", image_file="test.png"):
+def draw_candle_mpf(a_index_df, title="", image_file="test.png", fsize = None,other_param=None):
     '''
     use mplfiance to draw chart
     :param a_index_df: the dataframe of a index
@@ -225,15 +225,39 @@ def draw_candle_mpf(a_index_df, title="", image_file="test.png"):
     if os.path.isfile(image_file):
         os.remove(image_file)
 
-    mpf.plot(df3, type='candle', mav=(6, 12, 26), datetime_format='%Y-%m-%d',
-             volume=True,
+    yl = u'值'
+    yll = u'成交量'
+    v = True
+    xoff = False
+    uwc = None #{"dummy":0}
+    if other_param != None:
+        yl = other_param.get('ylabel')
+        yll = other_param.get('ylabel_lower')
+        v = other_param.get('volume')
+        xoff = other_param.get('axisoff')
+        uwc = other_param.get('update_width_config')
+        mpf.plot(df3, type='candle', mav=(6, 12, 26), datetime_format='%Y-%m-%d',
+             volume=v,
              title=title, style=s,
              tight_layout=True,
-             ylabel=u'值',
-             ylabel_lower=u'成交量',
+             ylabel= yl,
+             ylabel_lower= yll,
              scale_padding={'bottom': 1.1, 'left': 0.8},
-             savefig=image_file
-             )
+             savefig=image_file,
+             figsize=fsize,
+             axisoff=xoff,
+             update_width_config = uwc)
+    else:
+        mpf.plot(df3, type='candle', mav=(6, 12, 26), datetime_format='%Y-%m-%d',
+             volume=v,
+             title=title, style=s,
+             tight_layout=True,
+             ylabel= yl,
+             ylabel_lower= yll,
+             scale_padding={'bottom': 1.1, 'left': 0.8},
+             savefig=image_file,
+             figsize=fsize,
+             axisoff=xoff)
 
     # fig.savefig("pgf-mwe.png")
 
