@@ -17,9 +17,9 @@ logging.basicConfig(filename='swindex_app.log', filemode='a', level='INFO',
 list_file = "data/sw_index_class1"
 
 token = ""
-with open("tushare.token") as f:
-    token = f.readline()
-pro = ts.pro_api(token)
+#with open("tushare.token") as f:
+#    token = f.readline()
+#pro = ts.pro_api(token)
 
 def dump_sw_class1_list(file):
     '''
@@ -376,7 +376,7 @@ def dbdraw(connection=None):
 
     for code, row in df_indexlist.iterrows():
         name = row["index_name"]
-        print("code:%d, name:%s" % (code, name))
+        print(u"code:%d, name:%s" % (code, name))
         image_file = f'image/cw_index/{code}_current.png'
         draw_chart_by_db(code, name, image_file, connection)
 
@@ -474,7 +474,7 @@ def process_comp():
     df_indexlist = df_indexlist.set_index('index_code')
     for code, row in df_indexlist.iterrows():
         name = row["index_name"]
-        print("code:%d, name:%s" % (code, name))
+        print(u"code:%d, name:%s" % (code, name))
         cvs_file = f'data/comp/{code}_components.csv'
         json_file = f'data/compj/{code}_componentsx.json'
 
@@ -507,9 +507,10 @@ def run_app():
     if harvest_missing(conn) is None:
         conn.close()
         return
-
-    #get_all_stock_info()
-    #process_comp()
+    print("getting all stock info")
+    get_all_stock_info()
+    print("processing components")
+    process_comp()
 
     dbdraw(conn)
     conn.close()
