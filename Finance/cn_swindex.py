@@ -230,6 +230,8 @@ def draw_candle_mpf(a_index_df, title="", image_file="test.png", fsize = None,ot
     v = True
     xoff = False
     uwc = None #{"dummy":0}
+    if fsize == None:
+        fsize = (8.0, 5.75)
     if other_param != None:
         yl = other_param.get('ylabel')
         yll = other_param.get('ylabel_lower')
