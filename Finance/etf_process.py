@@ -275,8 +275,8 @@ def main():
     #test_get_sectors()
     #test_draw_charts()
     #test_db_op()
+    test_harvest_missing()
     test_draw_by_db()
-    #test_harvest_missing()
     #test_init_harvest()
 
 if __name__ == "__main__":
