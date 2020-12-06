@@ -57,6 +57,34 @@ function mo(elm){
 			$("#swlist").append("<div class='ml-2 symbol_item' id='" + code + "'><a href='" + whole_link +
 				"' target='_blank' style='background-color:"+ bgcolor + ";color:black'>" + name +"</a></div>");
 		}
+		$("#mark").text("");
+		$("#mark").append("codeid-" +codeid);
+		var halfsize = Object.keys(codes).length/2;
+		$("#start").val(5);
+		$("#start").attr("max",halfsize);
+		$("#getListImg").off("click");
+		$("#getListImg").click(
+			function(e ){
+				var start = $("#start").val();
+				var count = $("#count").val();
+				// var end = parseInt(start)+parseInt(count)+1;
+				// var list_len = Object.keys(codes).length;
+				// if( end > list_len)
+				// 	end = list_len;
+				// var code_sublist = codes;
+				// var c_sublist_array = []; //= sublist.join(",")
+				// for (i = start; i<end; i++)
+				// 	c_sublist_array.push(code_sublist[i]);
+				// var sublist_as_string = c_sublist_array.join(",")
+				// console.log(`Retrieving info of id: ${codeid} ,st: ${start}, cnt: ${count}`);
+				// console.log(`##list of interest:${sublist_as_string}`);
+				var param = `?cd=${codeid}&st=${start}&cnt=${count}`;
+				var win = window.open('stocksinsector'+param, '_blank');
+					if (win) {
+						win.focus();
+					}
+			}
+		)
 		console.log(lut(3.5));
 	});
 	console.log("mo called, code id:" + codeid);
