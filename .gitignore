@@ -117,3 +117,4 @@ Create Short LinkX
 *.png
 backup/
 /credentials_quickstart.json
+*.tocken
