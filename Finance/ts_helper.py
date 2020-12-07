@@ -5,6 +5,7 @@ import datetime
 import time
 
 
+fadd_postfix = lambda x: f'{x}.SH' if int(x) >= 600000 else f'{x}.SZ'
 
 def get_indices(pro):
     '''
@@ -34,3 +35,35 @@ def get_latest():
     row = c.fetchone()
     latest_str = row[0]
     print(latest_str)
+
+def get_a_stock_info(stock,start, end ,ts, connection=None ):
+    '''
+
+    :param stock:
+    :param start: start date , as format of 'yyyymmdd'
+    :param end: end date , as format of 'yyyymmdd'
+    :param connection:
+    :return:
+    '''
+    #df = pro.index_daily(ts_code='600506.SI', start_date='20200101')
+    #ts.set_token(token)
+    #df = ts.pro_bar(ts_code='000001.SZ', adj='qfq', start_date='20200601', end_date='20201205')
+    #today = datetime.datetime.today()
+    if end == None:
+        end = str(datetime.date.today())
+    df = ts.pro_bar(ts_code=stock, adj='qfq', start_date=start, end_date=end)
+    # round up very long value
+    df['change'] = df['change'].apply(lambda x: round(x, 2))
+    # change yyyymmdd to yyyy-mm-dd
+    df['trade_date'] = df['trade_date'].apply(lambda x: f'{x[:4]}-{x[4:6]}-{x[6:]}')
+    df = df.iloc[::-1] #reverse the order
+    print(len(df.trade_date))
+    df.to_csv(f'data/temp/{stock}.csv')
+
+
+    if connection is None:
+        conn = sqlite3.connect('sw_index.db')
+    else:
+        conn = connection
+    df.to_sql(name='stocks2', con=conn, index=False, if_exists='append')
+    print("done get a stock info")
