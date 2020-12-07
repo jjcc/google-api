@@ -58,7 +58,7 @@ def get_a_stock_info(stock,start, end ,ts, connection=None ):
     df['trade_date'] = df['trade_date'].apply(lambda x: f'{x[:4]}-{x[4:6]}-{x[6:]}')
     df = df.iloc[::-1] #reverse the order
     print(len(df.trade_date))
-    df.to_csv(f'data/temp/{stock}.csv')
+    #df.to_csv(f'data/temp/{stock}.csv')
 
 
     if connection is None:
@@ -67,3 +67,20 @@ def get_a_stock_info(stock,start, end ,ts, connection=None ):
         conn = connection
     df.to_sql(name='stocks2', con=conn, index=False, if_exists='append')
     print("done get a stock info")
+
+
+def get_list_of_stock_info(list, start, end,ts, conn = None):
+    '''
+
+    :param list:
+    :param start:
+    :param end:
+    :param ts:
+    :param conn:
+    :return:
+    '''
+    for stk in list:
+        time.sleep(1)
+        stkp = fadd_postfix(stk)
+        print(f"retriving {stk} as {stkp}")
+        get_a_stock_info(stkp, start,end, ts,conn)
