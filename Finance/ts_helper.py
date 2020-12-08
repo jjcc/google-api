@@ -36,7 +36,7 @@ def get_latest():
     latest_str = row[0]
     print(latest_str)
 
-def get_a_stock_info(stock,start, end ,ts, connection=None ):
+def get_a_stock_info(stock,start, end ,ts, connection=None , intodb=True):
     '''
 
     :param stock:
@@ -58,14 +58,16 @@ def get_a_stock_info(stock,start, end ,ts, connection=None ):
     df['trade_date'] = df['trade_date'].apply(lambda x: f'{x[:4]}-{x[4:6]}-{x[6:]}')
     df = df.iloc[::-1] #reverse the order
     print(len(df.trade_date))
-    #df.to_csv(f'data/temp/{stock}.csv')
+    df.to_csv(f'data/temp/{stock}.csv')
 
 
     if connection is None:
         conn = sqlite3.connect('sw_index.db')
     else:
         conn = connection
-    df.to_sql(name='stocks2', con=conn, index=False, if_exists='append')
+
+    if intodb:
+        df.to_sql(name='stocks2', con=conn, index=False, if_exists='append')
     print("done get a stock info")
 
 
