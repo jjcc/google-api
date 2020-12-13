@@ -406,10 +406,11 @@ def dbdraw(connection=None):
         image_file = f'image/cw_index/{code}_current.png'
         draw_chart_by_db(code, name, image_file, connection)
 
-def get_all_stock_info():
+def get_all_stock_info(file=None):
     df_close = ts.get_today_all()
-
-    df_close.to_csv(u"data/meta/all_stocks_close.csv")
+    if file == None:
+        file = u"data/meta/all_stocks_close.csv"
+    df_close.to_csv(file)
 
 def test_draw_candle():
     today = str(datetime.date.today())
