@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Stock Image</title>
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/thumbnail-gallery.css" rel="stylesheet">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114998708-1"></script>
+    <script>
+  window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-114998708-1');
+    </script>
+   <style>
+	td>img {
+
+		width:360px;
+	}
+
+    td>img:hover{
+        overflow:visible
+    }
+
+    .cs{
+        overflow:hidden;
+        width:300px;/*change this to whatever you want*/
+        height:150px;/*change this to whatever you want*/
+
+        /*Of course, to get the desired effect, the size of the image "<img>" below must be larger than the size mentioned above*/
+    }
+
+    .cs{
+        overflow:visible
+    }
+
+	.container img {
+		width: 100%;
+	}
+    .sizebar {
+        background-color:greenyellow;
+        display:inline-block;
+        height:10px;
+    }
+	</style>
+</head>
+<body>
+    {#% include 'navigation.html' %#}
+    {% block content %}{% endblock %}
+</body>
+</html>
