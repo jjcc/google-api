@@ -89,7 +89,7 @@ def get_list_of_stock_info(list, start, end,ts, conn = None):
         print(f"retriving {stk} as {stkp}")
         get_a_stock_info(stkp, start,end, ts,conn)
 
-def load_lastday_to_db(file,targetlist,trade_date, dbname='sw_index2.db',tablename='stock2'):
+def load_lastday_to_db(file,targetlist,trade_date, dbname='sw_index2.db',tablename='stocks2'):
     '''
     load stock info of the last day into DB
     :param file: the csv file of one day all stock info harvested from other scripts
